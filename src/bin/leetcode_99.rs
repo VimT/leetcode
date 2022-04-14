@@ -4,7 +4,8 @@ use std::collections::VecDeque;
 use std::mem::swap;
 use std::rc::Rc;
 
-use leetcode::treenode::{NodeTravel, TreeNode, vec_to_tree};
+use leetcode::tree;
+use leetcode::treenode::{TreeNode, leetcode_tree};
 
 type Node = Option<Rc<RefCell<TreeNode>>>;
 
@@ -164,9 +165,12 @@ pub fn recover_tree_morris(root: &mut Node) {
 
 fn main() {
     fn test(func: fn(root: &mut Node)) {
-        let mut tree = vec_to_tree(vec![1, 3, 0, 2]);
-        func(&mut tree);
-        assert_eq!(NodeTravel(tree).inorder(), [1, 2, 3]);
+        let help = |mut root: Node| {
+            func(&mut root);
+            root
+        };
+        assert_eq!(help(tree![1,3,null,null,2]), tree![3,1,null,null,2]);
+        assert_eq!(help(tree![3,1,4,null,null,2]), tree![2,1,4,null,null,3]);
     }
     test(recover_tree);
     test(recover_tree_iter);

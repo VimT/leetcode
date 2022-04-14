@@ -1,6 +1,6 @@
 //! 课程表
 
-use std::collections::LinkedList;
+use std::collections::VecDeque;
 
 /// 被当前节点启动 flags[i] = 1， 被其他节点启动： flags[i] = -1;
 pub fn can_finish_dfs(num_courses: i32, prerequisites: Vec<Vec<i32>>) -> bool {
@@ -40,7 +40,7 @@ pub fn can_finish_bfs(mut num_courses: i32, prerequisites: Vec<Vec<i32>>) -> boo
         adjacency[i[1] as usize].push(i[0] as usize);
         in_degree[i[0] as usize] += 1;
     }
-    let mut queue: LinkedList<usize> = in_degree.iter().enumerate().filter(|(_, degree)| **degree == 0).map(|(node, _)| node).collect();
+    let mut queue: VecDeque<usize> = in_degree.iter().enumerate().filter(|(_, degree)| **degree == 0).map(|(node, _)| node).collect();
     while !queue.is_empty() {
         let start_node = queue.pop_front().unwrap();
         // 删除此节点==所有邻接节点 入度-1，

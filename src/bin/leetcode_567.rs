@@ -1,3 +1,5 @@
+//! 字符串的排列
+
 pub fn check_inclusion(s1: String, s2: String) -> bool {
     if s1.len() > s2.len() {
         return false;
@@ -54,11 +56,10 @@ pub fn check_inclusion_best(s1: String, s2: String) -> bool {
 }
 
 fn main() {
-    assert!(check_inclusion(String::from("adc"), String::from("dcda")));
-    assert!(check_inclusion(String::from("ab"), String::from("eidbaooo")));
-    assert!(!check_inclusion(String::from("ab"), String::from("eidboaoo")));
-
-    assert!(check_inclusion_best(String::from("adc"), String::from("dcda")));
-    assert!(check_inclusion_best(String::from("ab"), String::from("eidbaooo")));
-    assert!(!check_inclusion_best(String::from("ab"), String::from("eidboaoo")));
+    fn test(func: fn(s1: String, s2: String) -> bool) {
+        assert_eq!(func(String::from("ab"), String::from("eidbaooo")), true);
+        assert_eq!(func(String::from("ab"), String::from("eidboaoo")), false);
+    }
+    test(check_inclusion);
+    test(check_inclusion_best);
 }

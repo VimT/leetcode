@@ -80,7 +80,7 @@ def trans_arg(arg: str, type: str, is_return: bool = False):
 
 class ProblemDetail(object):
     def __init__(self, question_id, ch_title, content, templates):
-        self.id = question_id.replace('面试题', 'm').replace('.', '_').replace(' ', '_').lower()
+        self.id = question_id.replace('面试题 ', 'm').replace('剑指 ', '').replace('.', '_').replace(' ', '_').lower()
         self.ch_title = ch_title
         self.content = content
         self.templates = templates
@@ -230,7 +230,7 @@ def get(pid, force, multi, slug, unorder):
                 return
             else:
                 logger.warning(f"will replace {path}")
-    with open(path, "w") as f:
+    with open(path, "w", encoding='utf-8') as f:
         cases = ""
         try:
             cases = detail.rust_testcase(multi, unorder)
@@ -246,7 +246,7 @@ def get(pid, force, multi, slug, unorder):
         f.write('\n')
         f.write('}\n')
     print(path)
-    subprocess.run(f'/usr/sbin/git add {path}', shell=True)
+    subprocess.run(f'git add {path}', shell=True)
 
 
 @cli.command('range')
@@ -255,7 +255,7 @@ def get(pid, force, multi, slug, unorder):
 def range_(start, end):
     start, end = int(start), int(end)
     problems = get_problems(skip=start - 1, limit=100)
-    filtered = [int(id) for id in problems if start <= int(id) <= end]
+    filtered = [int(id) for id in problems if id.isnumeric() and start <= int(id) <= end]
     for id in filtered:
         try:
             get.callback(str(id), False, True, '', False)
@@ -272,7 +272,7 @@ def fix_id():
         pid = int(pid)
         if pid < 5000:
             continue
-        with open(file, 'r') as f:
+        with open(file, 'r', encoding='utf-8') as f:
             first_line = f.readline()
             ch_title = first_line.strip('/! ').strip()
             problems = get_problems(ch_title)

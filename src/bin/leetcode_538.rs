@@ -58,4 +58,5 @@ fn main() {
         assert_eq!(func(tree![0,null,1]), tree![1,null,1]);
     }
     test(convert_bst);
+    test(convert_bst_better);
 }

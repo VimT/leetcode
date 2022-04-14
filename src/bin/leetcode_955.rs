@@ -48,10 +48,11 @@ pub fn min_deletion_size_optimise(strs: Vec<String>) -> i32 {
 }
 
 fn main() {
-    assert_eq!(min_deletion_size(svec!["ca", "bb", "ac"]), 1);
-    assert_eq!(min_deletion_size(svec!["xc", "yb", "za"]), 0);
-    assert_eq!(min_deletion_size(svec!["zyx", "wvu", "tsr"]), 3);
-    assert_eq!(min_deletion_size_optimise(svec!["ca", "bb", "ac"]), 1);
-    assert_eq!(min_deletion_size_optimise(svec!["xc", "yb", "za"]), 0);
-    assert_eq!(min_deletion_size_optimise(svec!["zyx", "wvu", "tsr"]), 3);
+    fn test(func: fn(strs: Vec<String>) -> i32) {
+        assert_eq!(func(svec!["ca","bb","ac"]), 1);
+        assert_eq!(func(svec!["xc","yb","za"]), 0);
+        assert_eq!(func(svec!["zyx","wvu","tsr"]), 3);
+    }
+    test(min_deletion_size);
+    test(min_deletion_size_optimise);
 }

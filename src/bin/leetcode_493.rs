@@ -1,5 +1,6 @@
 //! 翻转对
 
+
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
 use leetcode::algorithm::BinIndexedTree;
@@ -63,11 +64,11 @@ pub fn reverse_pairs_szsz(nums: Vec<i32>) -> i32 {
 }
 
 fn main() {
-    fn assert(nums: Vec<i32>, result: i32) {
-        assert_eq!(reverse_pairs_btreemap(nums.clone()), result);
-        assert_eq!(reverse_pairs_merge_sort(nums.clone()), result);
-        assert_eq!(reverse_pairs_szsz(nums.clone()), result);
+    fn test(func: fn(nums: Vec<i32>) -> i32) {
+        assert_eq!(func(vec![1, 3, 2, 3, 1]), 2);
+        assert_eq!(func(vec![2, 4, 3, 5, 1]), 3);
     }
-    assert(vec![2, 4, 3, 5, 1], 3);
-    assert(vec![1, 3, 2, 3, 1], 2);
+    test(reverse_pairs_btreemap);
+    test(reverse_pairs_merge_sort);
+    test(reverse_pairs_szsz);
 }

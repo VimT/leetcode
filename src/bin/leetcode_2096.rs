@@ -3,7 +3,8 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use leetcode::treenode::{TreeNode, vec_to_tree};
+use leetcode::tree;
+use leetcode::treenode::{leetcode_tree, TreeNode};
 
 pub fn get_directions(root: Option<Rc<RefCell<TreeNode>>>, start_value: i32, dest_value: i32) -> String {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, start_value: i32, dest_value: i32, cur: &mut Vec<u8>, start_road: &mut Vec<u8>, dest_road: &mut Vec<u8>) {
@@ -37,7 +38,11 @@ pub fn get_directions(root: Option<Rc<RefCell<TreeNode>>>, start_value: i32, des
     unsafe { String::from_utf8_unchecked(result) }
 }
 
+
 fn main() {
-    assert_eq!(get_directions(vec_to_tree(vec![5, 1, 3, 0, 0, 0, 2, 6, 0, 0, 4]), 3, 6), "UURL");
-    assert_eq!(get_directions(vec_to_tree(vec![2, 1]), 2, 1), "L");
+    fn test(func: fn(root: Option<Rc<RefCell<TreeNode>>>, start_value: i32, dest_value: i32) -> String) {
+        assert_eq!(func(tree![5,1,2,3,null,6,4], 3, 6), String::from("UURL"));
+        assert_eq!(func(tree![2,1], 2, 1), String::from("L"));
+    }
+    test(get_directions);
 }

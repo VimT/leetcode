@@ -1,9 +1,10 @@
-//! 剑指 Offer 32 - III. 从上到下打印二叉树 III
+//! 从上到下打印二叉树 III
 
-use std::cell::RefCell;
+use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::tree;
+
 use std::rc::Rc;
-
-use leetcode::treenode::{TreeNode, vec_to_tree};
+use std::cell::RefCell;
 
 pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     if root.is_none() { return vec![]; }
@@ -31,6 +32,10 @@ pub fn level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     result
 }
 
+
 fn main() {
-    assert_eq!(level_order(vec_to_tree(vec![3, 9, 0, 0, 20, 15, 0, 0, 7])), vec![vec![3], vec![20, 9], vec![15, 7]]);
+    fn test(func: fn(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>>) {
+        assert_eq!(func(tree![3,9,20,null,null,15,7]), vec![vec![3], vec![20, 9], vec![15, 7]]);
+    }
+    test(level_order);
 }

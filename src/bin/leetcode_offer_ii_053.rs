@@ -1,9 +1,11 @@
-//! 剑指 Offer II 053. 二叉搜索树中的中序后继
+//! 二叉搜索树中的中序后继
 
-use std::cell::RefCell;
+use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::tree;
+
 use std::rc::Rc;
+use std::cell::RefCell;
 
-use leetcode::treenode::{TreeNode, vec_to_tree};
 
 pub fn inorder_successor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
     fn inner(root: Option<Rc<RefCell<TreeNode>>>, target: i32, result: &mut Option<Rc<RefCell<TreeNode>>>) -> bool {
@@ -51,6 +53,12 @@ pub fn inorder_successor_best(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<
     result
 }
 
+
 fn main() {
-    println!("{:?}", inorder_successor_best(vec_to_tree(vec![2, 0, 3]), Some(Rc::new(RefCell::new(TreeNode::new(2))))));
+    fn test(func: fn(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>>) {
+        assert_eq!(func(tree![2,1,3], tree![1]).as_ref().unwrap().borrow().val, 2);
+        assert_eq!(func(tree![5,3,6,2,4,null,null,1], tree![6]).is_none(), true);
+    }
+    test(inorder_successor);
+    test(inorder_successor_best);
 }

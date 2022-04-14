@@ -82,34 +82,4 @@ fn main() {
     assert_eq!(obj.insert_front(4), true);
     assert_eq!(obj.delete_last(), true);
     assert_eq!(obj.get_rear(), -1);
-
-
-    println!("{:?}", find_even_numbers(vec![3, 7, 5]));
-}
-
-pub fn find_even_numbers(digits: Vec<i32>) -> Vec<i32> {
-    let mut result = vec![];
-    let mut cnt = vec![0; 10];
-    for i in digits {
-        cnt[i as usize] += 1;
-    }
-    for i in (100..=998).step_by(2) {
-        let mut num = i;
-        let mut num_cnt = vec![0; 10];
-        while num > 0 {
-            num_cnt[(num % 10) as usize] += 1;
-            num /= 10;
-        }
-        let mut ok = true;
-        for i in 0..10 {
-            if num_cnt[i] > cnt[i] {
-                ok = false;
-                break;
-            }
-        }
-        if ok {
-            result.push(i);
-        }
-    }
-    result
 }

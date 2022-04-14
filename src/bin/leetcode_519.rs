@@ -1,5 +1,6 @@
 //! 随机翻转矩阵
 
+
 use std::collections::{HashMap, HashSet};
 
 use rand::{Rng, thread_rng};
@@ -90,28 +91,19 @@ impl Solution2 {
     }
 }
 
-fn main() {
-    let mut s = Solution2::new(3, 1);
-    println!("{:?}", s.flip());
-    println!("{:?}", s.flip());
-    println!("{:?}", s.flip());
-    s.reset();
-    println!("{:?}", s.flip());
-}
 
-pub fn count_words(words1: Vec<String>, words2: Vec<String>) -> i32 {
-    let mut count = std::collections::HashMap::new();
-    for i in words1 {
-        *count.entry(i).or_insert(0i32) += 1;
-    }
-    for i in words2 {
-        *count.entry(i).or_insert(0i32) += 1000;
-    }
-    let mut result = 0;
-    for (_, v) in count {
-        if v == 1001 {
-            result += 1;
-        }
-    }
-    result
+fn main() {
+    let mut solution = Solution::new(3, 1);
+    println!("{:?}", solution.flip());  // 返回 [1, 0]，此时返回 [0,0]、[1,0] 和 [2,0] 的概率应当相同
+    println!("{:?}", solution.flip());  // 返回 [2, 0]，因为 [1,0] 已经返回过了，此时返回 [2,0] 和 [0,0] 的概率应当相同
+    println!("{:?}", solution.flip());  // 返回 [0, 0]，根据前面已经返回过的下标，此时只能返回 [0,0]
+    solution.reset(); // 所有值都重置为 0 ，并可以再次选择下标返回
+    println!("{:?}", solution.flip());  // 返回 [2, 0]，此时返回 [0,0]、[1,0] 和 [2,0] 的概率应当相同
+
+    let mut solution = Solution2::new(3, 1);
+    println!("{:?}", solution.flip());  // 返回 [1, 0]，此时返回 [0,0]、[1,0] 和 [2,0] 的概率应当相同
+    println!("{:?}", solution.flip());  // 返回 [2, 0]，因为 [1,0] 已经返回过了，此时返回 [2,0] 和 [0,0] 的概率应当相同
+    println!("{:?}", solution.flip());  // 返回 [0, 0]，根据前面已经返回过的下标，此时只能返回 [0,0]
+    solution.reset(); // 所有值都重置为 0 ，并可以再次选择下标返回
+    println!("{:?}", solution.flip());  // 返回 [2, 0]，此时返回 [0,0]、[1,0] 和 [2,0] 的概率应当相同
 }

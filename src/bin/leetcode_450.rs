@@ -1,10 +1,10 @@
 //! 删除二叉搜索树中的节点
 
-
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use leetcode::treenode::{NodeTravel, TreeNode, vec_to_tree};
+use leetcode::tree;
+use leetcode::treenode::{leetcode_tree, TreeNode};
 
 pub fn delete_node(root: Option<Rc<RefCell<TreeNode>>>, key: i32) -> Option<Rc<RefCell<TreeNode>>> {
     if root.is_some() {
@@ -44,8 +44,9 @@ pub fn delete_node(root: Option<Rc<RefCell<TreeNode>>>, key: i32) -> Option<Rc<R
     root
 }
 
+
 fn main() {
-    assert_eq!(NodeTravel(delete_node(vec_to_tree(vec![5, 3, 2, 0, 0, 4, 0, 0, 6, 0, 7]), 3)).preorder(), vec![5, 4, 2, 6, 7]);
-    assert_eq!(NodeTravel(delete_node(vec_to_tree(vec![5, 3, 2, 0, 0, 4, 0, 0, 6, 0, 7]), 0)).preorder(), vec![5, 3, 2, 4, 6, 7]);
-    assert_eq!(NodeTravel(delete_node(vec_to_tree(vec![]), 0)).preorder(), vec![]);
+    assert_eq!(delete_node(tree![5,3,6,2,4,null,7], 3), tree![5,4,6,2,null,null,7]);
+    assert_eq!(delete_node(tree![5,3,6,2,4,null,7], 0), tree![5,3,6,2,4,null,7]);
+    assert_eq!(delete_node(tree![], 0), tree![]);
 }

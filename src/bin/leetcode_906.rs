@@ -49,7 +49,7 @@ pub fn superpalindromes_in_range(left: String, right: String) -> i32 {
             for len in 2..10 {
                 make(&mut vec![], len, &mut result);
             }
-            println!("{:?}", result);
+            // println!("{:?}", result);
             MAP = Some(result);
         });
 

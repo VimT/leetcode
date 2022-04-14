@@ -1,14 +1,13 @@
 //! O(1) 时间插入、删除和获取随机元素
+
 use std::collections::HashMap;
 
-use rand::prelude::ThreadRng;
-use rand::Rng;
+use rand::prelude::random;
 
 #[derive(Default)]
 struct RandomizedSet {
     map: HashMap<i32, usize>,
     list: Vec<i32>,
-    rng: Option<ThreadRng>,
 }
 
 
@@ -18,8 +17,7 @@ impl RandomizedSet {
     }
 
     fn insert(&mut self, val: i32) -> bool {
-        let has = self.map.contains_key(&val);
-        if has { return false; }
+        if self.map.contains_key(&val) { return false; }
         self.list.push(val);
         self.map.insert(val, self.list.len() - 1);
         true
@@ -40,8 +38,7 @@ impl RandomizedSet {
     }
 
     fn get_random(&mut self) -> i32 {
-        let rng = self.rng.get_or_insert(rand::thread_rng());
-        return self.list[rng.gen_range(0, self.list.len())];
+        return self.list[random::<usize>() % self.list.len()];
     }
 }
 

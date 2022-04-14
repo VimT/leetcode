@@ -26,66 +26,6 @@ impl Debug for TreeNode {
     }
 }
 
-type TNode = Option<Rc<RefCell<TreeNode>>>;
-
-pub struct NodeTravel(pub TNode);
-
-impl NodeTravel {
-    pub fn inorder(&self) -> Vec<i32> {
-        fn inner(node: TNode, ans: &mut Vec<i32>) {
-            if let Some(n) = node {
-                inner(n.borrow().left.clone(), ans);
-                ans.push(n.borrow().val);
-                inner(n.borrow().right.clone(), ans);
-            }
-        }
-        let mut ans = vec![];
-        inner(self.0.clone(), &mut ans);
-        ans
-    }
-
-    pub fn preorder(&self) -> Vec<i32> {
-        fn inner(node: TNode, ans: &mut Vec<i32>) {
-            if let Some(n) = node {
-                ans.push(n.borrow().val);
-                inner(n.borrow().left.clone(), ans);
-                inner(n.borrow().right.clone(), ans);
-            }
-        }
-        let mut ans = vec![];
-        inner(self.0.clone(), &mut ans);
-        ans
-    }
-
-    pub fn postorder(&self) -> Vec<i32> {
-        fn inner(node: TNode, ans: &mut Vec<i32>) {
-            if let Some(n) = node {
-                inner(n.borrow().left.clone(), ans);
-                inner(n.borrow().right.clone(), ans);
-                ans.push(n.borrow().val);
-            }
-        }
-        let mut ans = vec![];
-        inner(self.0.clone(), &mut ans);
-        ans
-    }
-}
-
-fn vec_to_tree_inner(arr: &Vec<i32>, idx: &mut usize) -> Option<Rc<RefCell<TreeNode>>> {
-    if *idx >= arr.len() { return None; }
-    let val = arr[*idx];
-    if val == 0 { return None; }
-    let mut root = TreeNode::new(val);
-    *idx += 1;
-    root.left = vec_to_tree_inner(arr, idx);
-    *idx += 1;
-    root.right = vec_to_tree_inner(arr, idx);
-    Some(Rc::new(RefCell::new(root)))
-}
-
-pub fn vec_to_tree(arr: Vec<i32>) -> Option<Rc<RefCell<TreeNode>>> {
-    vec_to_tree_inner(&arr, &mut 0)
-}
 
 pub fn leetcode_tree(input: &str) -> Option<Rc<RefCell<TreeNode>>> {
     let input: String = input.trim_matches(|x| x == '[' || x == ']').chars().filter(|x| !x.is_ascii_whitespace()).collect();

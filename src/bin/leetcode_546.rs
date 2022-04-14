@@ -1,5 +1,6 @@
 //! 移除盒子
 
+
 use std::collections::HashMap;
 
 pub fn remove_boxes(boxes: Vec<i32>) -> i32 {
@@ -56,7 +57,11 @@ pub fn remove_boxes_dp(boxes: Vec<i32>) -> i32 {
 }
 
 fn main() {
-    assert_eq!(remove_boxes_dp(vec![1, 3, 2, 2, 2, 3, 4, 3, 1]), 23);
-    assert_eq!(remove_boxes_dp(vec![1, 1, 1]), 9);
-    assert_eq!(remove_boxes_dp(vec![1]), 1);
+    fn test(func: fn(boxes: Vec<i32>) -> i32) {
+        assert_eq!(func(vec![1, 3, 2, 2, 2, 3, 4, 3, 1]), 23);
+        assert_eq!(func(vec![1, 1, 1]), 9);
+        assert_eq!(func(vec![1]), 1);
+    }
+    test(remove_boxes);
+    test(remove_boxes_dp);
 }

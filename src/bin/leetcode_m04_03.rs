@@ -3,8 +3,9 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
+use leetcode::{tree, link};
 use leetcode::linknode::ListNode;
-use leetcode::treenode::{TreeNode, vec_to_tree};
+use leetcode::treenode::{TreeNode, leetcode_tree};
 
 fn vec_to_link(l: Vec<i32>) -> Option<Box<ListNode>> {
     if l.len() == 0 { return None; }
@@ -41,5 +42,5 @@ pub fn list_of_depth(tree: Option<Rc<RefCell<TreeNode>>>) -> Vec<Option<Box<List
 }
 
 fn main() {
-    println!("{:?}", list_of_depth(vec_to_tree(vec![1, 2, 4, 8, 0, 0, 0, 5, 0, 0, 3, 0, 7])));
+    assert_eq!(list_of_depth(tree![1,2,3,4,5,null,7,8]), vec![link![1],link![2,3],link![4,5,7],link![8]]);
 }

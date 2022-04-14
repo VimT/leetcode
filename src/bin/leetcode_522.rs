@@ -1,8 +1,8 @@
 //! 最长特殊序列 II
 
 use std::collections::HashMap;
-
 use leetcode::svec;
+
 
 pub fn find_lu_slength(strs: Vec<String>) -> i32 {
     let len = strs.len();
@@ -62,8 +62,10 @@ pub fn find_lu_slength_check(mut strs: Vec<String>) -> i32 {
 }
 
 fn main() {
-    assert_eq!(find_lu_slength_check(svec!["aba", "cdc", "eae"]), 3);
-    assert_eq!(find_lu_slength(svec!["aba", "cdc", "eae"]), 3);
-    assert_eq!(find_lu_slength_check(svec!["aaa", "aaa", "aa"]), -1);
-    assert_eq!(find_lu_slength(svec!["aaa", "aaa", "aa"]), -1);
+    fn test(func: fn(strs: Vec<String>) -> i32) {
+        assert_eq!(func(svec!["aba","cdc","eae"]), 3);
+        assert_eq!(func(svec!["aaa","aaa","aa"]), -1);
+    }
+    test(find_lu_slength);
+    test(find_lu_slength_check);
 }

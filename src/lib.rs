@@ -4,6 +4,7 @@ pub mod fnv;
 pub mod gcd;
 pub mod linknode;
 pub mod treenode;
+pub mod suffix_array;
 
 pub fn unorder<T: Ord>(mut list: Vec<T>) -> Vec<T> {
     list.sort_unstable();

@@ -2,6 +2,7 @@
 
 use leetcode::svec;
 
+
 pub fn find_longest_word(s: String, dictionary: Vec<String>) -> String {
     let s = s.as_bytes();
     let mut result = String::new();
@@ -54,9 +55,12 @@ pub fn find_longest_word_optimise(s: String, mut dictionary: Vec<String>) -> Str
     String::new()
 }
 
+
 fn main() {
-    assert_eq!(find_longest_word_optimise(String::from("abpcplea"), svec!["ale", "apple", "monkey", "plea"]), String::from("apple"));
-    assert_eq!(find_longest_word(String::from("abpcplea"), svec!["ale", "apple", "monkey", "plea"]), String::from("apple"));
-    assert_eq!(find_longest_word_optimise(String::from("abpcplea"), svec!["a", "b", "c"]), String::from("a"));
-    assert_eq!(find_longest_word(String::from("abpcplea"), svec!["a", "b", "c"]), String::from("a"));
+    fn test(func: fn(s: String, dictionary: Vec<String>) -> String) {
+        assert_eq!(func(String::from("abpcplea"), svec!["ale","apple","monkey","plea"]), String::from("apple"));
+        assert_eq!(func(String::from("abpcplea"), svec!["a","b","c"]), String::from("a"));
+    }
+    test(find_longest_word);
+    test(find_longest_word_optimise);
 }

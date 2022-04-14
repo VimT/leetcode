@@ -45,7 +45,7 @@ pub fn prime_palindrome(n: i32) -> i32 {
                 cur_len += 1;
                 if cur_len == 8 { cur_len += 1; }
             }
-            println!("{:?}", nums);
+            // println!("{:?}", nums);
             M = Some(Box::new(nums));
         });
         let m = M.as_ref().unwrap();

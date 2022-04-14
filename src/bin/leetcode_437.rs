@@ -1,11 +1,11 @@
 //! 路径总和 III
 
-
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use leetcode::treenode::{TreeNode, vec_to_tree};
+use leetcode::tree;
+use leetcode::treenode::{leetcode_tree, TreeNode};
 
 pub fn path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> i32 {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, presum: &mut HashMap<i32, i32>, mut cur_sum: i32, target_sum: i32, result: &mut i32) {
@@ -30,7 +30,8 @@ pub fn path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> i32 {
     result
 }
 
+
 fn main() {
-    assert_eq!(path_sum(vec_to_tree(vec![10, 5, 3, 3, 0, 0, -2, 0, 0, 2, 0, 1, 0, 0, -3, 0, 11]), 8), 3);
-    assert_eq!(path_sum(vec_to_tree(vec![5, 4, 11, 7, 0, 0, 2, 0, 0, 0, 8, 13, 5, 0, 0, 1, 0, 0, 4]), 22), 3);
+    assert_eq!(path_sum(tree![10,5,-3,3,2,null,11,3,-2,null,1], 8), 3);
+    assert_eq!(path_sum(tree![5,4,8,11,null,13,4,7,2,null,null,5,1], 22), 3);
 }

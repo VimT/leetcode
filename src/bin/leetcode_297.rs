@@ -3,7 +3,8 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use leetcode::treenode::{NodeTravel, TreeNode, vec_to_tree};
+use leetcode::tree;
+use leetcode::treenode::{TreeNode, leetcode_tree};
 
 struct Codec {}
 
@@ -53,8 +54,11 @@ impl Codec {
 
 fn main() {
     let c = Codec::new();
-    println!("{:?}", NodeTravel(c.deserialize(c.serialize(vec_to_tree(vec![1, 2, 0, 0, 3, 4, 0, 0, 5])))).preorder());
-    println!("{:?}", NodeTravel(c.deserialize(c.serialize(vec_to_tree(vec![1])))).preorder());
-    println!("{:?}", NodeTravel(c.deserialize(c.serialize(vec_to_tree(vec![1, 2])))).preorder());
-    println!("{:?}", NodeTravel(c.deserialize(c.serialize(vec_to_tree(vec![])))).preorder());
+    let help = |t: Option<Rc<RefCell<TreeNode>>>| {
+        assert_eq!(c.deserialize(c.serialize(t.clone())), t);
+    };
+    help(tree![1,2,3,null,null,4,5]);
+    help(tree![]);
+    help(tree![1]);
+    help(tree![1,2]);
 }

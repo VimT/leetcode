@@ -1,5 +1,6 @@
 //! 目标和
 
+
 pub fn find_target_sum_ways(nums: Vec<i32>, target: i32) -> i32 {
     let len = nums.len();
     let mut result = 0;
@@ -76,6 +77,10 @@ pub fn find_target_sum_ways_best(nums: Vec<i32>, target: i32) -> i32 {
 }
 
 fn main() {
-    assert_eq!(find_target_sum_ways_best(vec![1, 1, 1, 1, 1], 3), 5);
-    assert_eq!(find_target_sum_ways_best(vec![1], 1), 1);
+    fn test(func: fn(nums: Vec<i32>, target: i32) -> i32) {
+        assert_eq!(func(vec![1, 1, 1, 1, 1], 3), 5);
+        assert_eq!(func(vec![1], 1), 1);
+    }
+    test(find_target_sum_ways);
+    test(find_target_sum_ways_best);
 }

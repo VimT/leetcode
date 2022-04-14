@@ -1,8 +1,10 @@
 //! 验证二叉搜索树
+
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use leetcode::treenode::{TreeNode, vec_to_tree};
+use leetcode::tree;
+use leetcode::treenode::{leetcode_tree, TreeNode};
 
 type Node = Option<Rc<RefCell<TreeNode>>>;
 
@@ -20,8 +22,8 @@ pub fn is_valid_bst(root: Node) -> bool {
     inner(root, i64::MIN, i64::MAX)
 }
 
-fn main() {
-    assert_eq!(is_valid_bst(vec_to_tree(vec![2, 1, 0, 0, 3])), true);
-    assert_eq!(is_valid_bst(vec_to_tree(vec![5, 1, 0, 0, 4, 3, 0, 0, 6])), false);
-}
 
+fn main() {
+    assert_eq!(is_valid_bst(tree![2,1,3]), true);
+    assert_eq!(is_valid_bst(tree![5,1,4,null,null,3,6]), false);
+}

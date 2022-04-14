@@ -135,9 +135,9 @@ fn main() {
     obj.inc(String::from("count2"));
     obj.inc(String::from("count2"));
     obj.inc(String::from("count1"));
-    println!("{}", obj.get_max_key());
-    println!("{}", obj.get_min_key());
+    assert_eq!(obj.get_max_key(), "count2");
+    assert_eq!(obj.get_min_key(), "count1");
     obj.dec(String::from("key"));
-    println!("{}", obj.get_max_key());
-    println!("{}", obj.get_min_key());
+    assert_eq!(obj.get_max_key(), "count2");
+    assert_eq!(obj.get_min_key(), "count1");
 }
