@@ -1,5 +1,6 @@
 //! 按字典序排在最后的子串
 
+/// 双指针
 pub fn last_substring(s: String) -> String {
     let s = s.as_bytes();
     let mut i = 0;

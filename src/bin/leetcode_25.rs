@@ -55,25 +55,25 @@ pub fn reverse_k_group(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNo
     let mut end: *mut _ = &mut dummy;
 
     unsafe {
-        while end.as_ref().unwrap().as_ref().unwrap().next.is_some() {
+        while (*end).as_ref().unwrap().next.is_some() {
             for _ in 0..k {
-                if end.as_ref().unwrap().is_none() { break; }
-                end = &mut end.as_mut().unwrap().as_mut().unwrap().next;
+                if (*end).is_none() { break; }
+                end = &mut (*end).as_mut().unwrap().next;
             }
-            if end.as_ref().unwrap().is_none() { break; }
+            if (*end).is_none() { break; }
             // 执行这一步之后，pre的指针变成了 pre.next ，迷
-            let mut start = pre.as_mut().unwrap().as_mut().unwrap().next.take();
+            let mut start = (*pre).as_mut().unwrap().next.take();
             // 所以重新从头节点遍历一下
             pre = &mut dummy;
             while pre.as_ref().unwrap().as_ref().unwrap().next.is_some() {
-                pre = &mut pre.as_mut().unwrap().as_mut().unwrap().next;
+                pre = &mut (*pre).as_mut().unwrap().next;
             }
 
-            let mut next = end.as_mut().unwrap().as_mut().unwrap().next.take();
+            let mut next = (*end).as_mut().unwrap().next.take();
             let startp: *mut _ = &mut start;
-            end.as_mut().unwrap().as_mut().unwrap().next = None;
-            pre.as_mut().unwrap().as_mut().unwrap().next = reverse(start).take();
-            startp.as_mut().unwrap().as_mut().unwrap().next = next.take();
+            (*end).as_mut().unwrap().next = None;
+            (*pre).as_mut().unwrap().next = reverse(start).take();
+            (*startp).as_mut().unwrap().next = next.take();
             pre = startp;
             end = pre;
         }

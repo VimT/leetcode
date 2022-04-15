@@ -8,16 +8,16 @@ pub fn reorder_list(head: &mut Option<Box<ListNode>>) {
     let mut p: *mut _ = head;
     let mut len = 0;
     unsafe {
-        while p.as_ref().unwrap().is_some() {
-            p = &mut p.as_mut().unwrap().as_mut().unwrap().next;
+        while (*p).is_some() {
+            p = &mut (*p).as_mut().unwrap().next;
             len += 1;
         }
         let skip = (len - 1) / 2;
         p = head;
         for _ in 0..skip {
-            p = &mut p.as_mut().unwrap().as_mut().unwrap().next;
+            p = &mut (*p).as_mut().unwrap().next;
         }
-        let mut p2 = p.as_mut().unwrap().as_mut().unwrap().next.take();
+        let mut p2 = (*p).as_mut().unwrap().next.take();
 
         // reverse
         let mut pre = None;
@@ -32,12 +32,12 @@ pub fn reorder_list(head: &mut Option<Box<ListNode>>) {
         // insert
         let mut p2 = pre;
         let mut p1: *mut _ = head;
-        while p1.as_ref().unwrap().is_some() && p2.is_some() {
-            let mut p1n = p1.as_mut().unwrap().as_mut().unwrap().next.take();
+        while (*p1).is_some() && p2.is_some() {
+            let mut p1n = (*p1).as_mut().unwrap().next.take();
             let p2n = p2.as_mut().unwrap().next.take();
             p2.as_mut().unwrap().next = p1n.take();
-            p1.as_mut().unwrap().as_mut().unwrap().next = p2.take();
-            p1 = &mut p1.as_mut().unwrap().as_mut().unwrap().next.as_mut().unwrap().next;
+            (*p1).as_mut().unwrap().next = p2.take();
+            p1 = &mut (*p1).as_mut().unwrap().next.as_mut().unwrap().next;
             p2 = p2n;
         }
     }
