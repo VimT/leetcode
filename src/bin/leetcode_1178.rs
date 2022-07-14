@@ -1,3 +1,7 @@
+//! 猜字谜
+
+use leetcode::svec;
+
 // 1140ms
 pub fn find_num_of_valid_words(words: Vec<String>, puzzles: Vec<String>) -> Vec<i32> {
     let len = words.len();
@@ -18,7 +22,7 @@ pub fn find_num_of_valid_words(words: Vec<String>, puzzles: Vec<String>) -> Vec<
             has_char = has_char | (1 << (char - b'a'));
         }
         let mut count = 0;
-        'outer: for i in 0..len {
+        for i in 0..len {
             if word_chars[i] & (1 << (puzzle[0] - b'a')) == 0 {
                 continue;
             }
@@ -33,14 +37,14 @@ pub fn find_num_of_valid_words(words: Vec<String>, puzzles: Vec<String>) -> Vec<
     ans
 }
 
-// 状态压缩+子集
+/// 状态压缩+子集
 pub fn find_num_of_valid_words_bin_compact(words: Vec<String>, puzzles: Vec<String>) -> Vec<i32> {
     // 出现相同字母的word出现的次数
     let mut frequency = std::collections::HashMap::new();
     for word in &words {
         let mut mask: i32 = 0;
         for ch in word.as_bytes() {
-            mask |= (1 << ch - b'a');
+            mask |= 1 << ch - b'a';
         }
         if mask.count_ones() <= 7 {
             *frequency.entry(mask).or_insert(0) += 1;
@@ -76,7 +80,7 @@ pub fn find_num_of_valid_words_bin_compact(words: Vec<String>, puzzles: Vec<Stri
             if let Some(&count) = frequency.get(&s) {
                 total += count;
             }
-            // remove one 1
+            // remove last 1
             subset = (subset - 1) & mask;
         }
         // only one char
@@ -156,11 +160,11 @@ pub fn find_num_of_valid_words_trie(words: Vec<String>, puzzles: Vec<String>) ->
 
 
 fn main() {
-    let words = vec!["aaaa", "asas", "able", "ability", "actt", "actor", "access"];
-    let puzzles = vec!["aboveyz", "abrodyz", "abslute", "absoryz", "actresz", "gaswxyz"];
-    println!("{:?}", find_num_of_valid_words_trie(words.into_iter().map(|x| x.to_string()).collect(), puzzles.into_iter().map(|x| x.to_string()).collect()));
-
-    let words = vec!["apple", "pleas", "please"];
-    let puzzles = vec!["aelwxyz", "aelpxyz", "aelpsxy", "saelpxy", "xaelpsy"];
-    println!("{:?}", find_num_of_valid_words_trie(words.into_iter().map(|x| x.to_string()).collect(), puzzles.into_iter().map(|x| x.to_string()).collect()));
+    fn test(func: fn(words: Vec<String>, puzzles: Vec<String>) -> Vec<i32>) {
+        assert_eq!(func(svec!["aaaa","asas","able","ability","actt","actor","access"], svec!["aboveyz","abrodyz","abslute","absoryz","actresz","gaswxyz"]), vec![1, 1, 3, 2, 4, 0]);
+        assert_eq!(func(svec!["apple","pleas","please"], svec!["aelwxyz","aelpxyz","aelpsxy","saelpxy","xaelpsy"]), vec![0, 1, 3, 2, 0]);
+    }
+    test(find_num_of_valid_words);
+    test(find_num_of_valid_words_bin_compact);
+    test(find_num_of_valid_words_trie);
 }

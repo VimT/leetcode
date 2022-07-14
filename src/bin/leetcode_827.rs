@@ -8,7 +8,7 @@ pub fn largest_island(grid: Vec<Vec<i32>>) -> i32 {
     let mut land_idx = 0;
     let mut q = VecDeque::new();
     let mut land_size = vec![0];
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     for i in 0..n {
         for j in 0..n {
             if grid[i][j] == 1 && land[i][j] == 0 {

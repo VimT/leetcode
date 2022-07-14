@@ -3,7 +3,7 @@
 use std::collections::VecDeque;
 
 pub fn shortest_bridge(mut grid: Vec<Vec<i32>>) -> i32 {
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     let len = grid.len();
     let mut idx = 2;
     for i in 0..len {

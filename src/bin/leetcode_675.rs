@@ -3,7 +3,7 @@
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 
-const DIR: [(i32, i32); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
+static DIR: [(i32, i32); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
 fn astar(forest: &Vec<Vec<i32>>, sx: i32, sy: i32, tx: i32, ty: i32) -> i32 {
     let mut heap = BinaryHeap::new();

@@ -5,6 +5,7 @@ pub mod gcd;
 pub mod linknode;
 pub mod treenode;
 pub mod suffix_array;
+pub mod nested_integer;
 
 pub fn unorder<T: Ord>(mut list: Vec<T>) -> Vec<T> {
     list.sort_unstable();
@@ -46,5 +47,12 @@ macro_rules! tree {
     );
     ($($x:expr),+$(,)?) => (
         leetcode_tree(stringify!($($x),+))
+    );
+}
+
+#[macro_export]
+macro_rules! nested_int {
+    ($($x:expr),+$(,)?) => (
+        NestedInteger::from_str(stringify!($($x),+))
     );
 }

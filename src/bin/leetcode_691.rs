@@ -1,7 +1,6 @@
 //! 贴纸拼词
 
 use std::collections::HashMap;
-
 use leetcode::svec;
 
 pub fn min_stickers(stickers: Vec<String>, target: String) -> i32 {
@@ -78,11 +77,9 @@ pub fn min_stickers_dp(stickers: Vec<String>, target: String) -> i32 {
     let mut dp = vec![i32::MAX / 2; 1 << tlen];
     dp[0] = 0;
     for i in 0..1 << tlen {
-        let mut cur_cnt = [0; 26];
         let mut cur_bin = 0;
         for j in 0..tlen {
             if i & (1 << j) == 0 {
-                cur_cnt[(t[j] - b'a') as usize] += 1;
                 cur_bin |= 1 << (t[j] - b'a');
             }
         }
@@ -105,8 +102,55 @@ pub fn min_stickers_dp(stickers: Vec<String>, target: String) -> i32 {
     if dp[(1 << tlen) - 1] >= i32::MAX / 2 { -1 } else { dp[(1 << tlen) - 1] }
 }
 
+pub fn min_stickers_dp_best(stickers: Vec<String>, target: String) -> i32 {
+    const INF: i32 = 0x3f3f3f3f;
+    let (m, n) = (stickers.len(), target.len());
+    let tot = 1 << n;
+    let mut dp = vec![INF; tot];
+    let target = target.into_bytes();
+    let mut ss = vec![vec![0; 26]; m];
+    let mut can: Vec<Vec<i32>> = vec![vec![]; 26];
+    for (pos, i) in stickers.iter().enumerate() {
+        let s = i.as_bytes();
+        for j in 0..s.len() {
+            let t = (s[j] - b'a') as usize;
+            ss[pos][t] += 1;
+            if can[t].len() == 0 || can[t][can[t].len() - 1] != pos as i32 { can[t].push(pos as i32); }
+        }
+    }
+    dp[0] = 0;
+    for i in 0..tot {
+        if dp[i] == INF { continue; }
+        let mut pos = 0;
+        for j in 0..n {
+            if (i & (1 << j)) == 0 {
+                pos = j;
+                break;
+            }
+        }
+        for j in can[(target[pos] - b'a') as usize].iter() {
+            let mut cnt = ss[(*j) as usize].clone();
+            let mut nxt = i;
+            for k in 0..n {
+                if (nxt & (1 << k)) != 0 { continue; }
+                if cnt[(target[k] - b'a') as usize] > 0 {
+                    nxt = nxt | (1 << k);
+                    cnt[(target[k] - b'a') as usize] -= 1;
+                }
+            }
+            dp[nxt] = dp[nxt].min(dp[i] + 1);
+        }
+    }
+    if dp[tot - 1] == INF { -1 } else { dp[tot - 1] }
+}
+
+
 fn main() {
-    assert_eq!(min_stickers(svec!["with", "example", "science"], "thehat".to_string()), 3);
-    assert_eq!(min_stickers(svec!["notice", "possible"], "basicbasic".to_string()), -1);
-    assert_eq!(min_stickers(svec!["and", "pound", "force", "human", "fair", "back", "sign", "course", "sight", "world", "close", "saw", "best", "fill", "late", "silent", "open", "noon", "seat", "cell", "take", "between", "it", "hundred", "hat", "until", "either", "play", "triangle", "stay", "separate", "season", "tool", "direct", "part", "student", "path", "ear", "grow", "ago", "main", "was", "rule", "element", "thing", "place", "common", "led", "support", "mean"], "quietchord".to_string()), -1);
+    fn test(func: fn(stickers: Vec<String>, target: String) -> i32) {
+        assert_eq!(func(svec!["with","example","science"], String::from("thehat")), 3);
+        assert_eq!(func(svec!["notice","possible"], String::from("basicbasic")), -1);
+    }
+    test(min_stickers);
+    test(min_stickers_dp);
+    test(min_stickers_dp_best);
 }

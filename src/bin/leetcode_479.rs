@@ -2,6 +2,7 @@
 
 const MOD: i64 = 1337;
 
+/// 数学方法：https://leetcode-cn.com/problems/largest-palindrome-product/solution/by-jam007-oi63/
 pub fn largest_palindrome(n: i32) -> i32 {
     if n == 1 { return 9; }
     let m = 10_i64.pow(n as u32);

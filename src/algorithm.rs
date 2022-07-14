@@ -231,6 +231,34 @@ pub fn kmp(s: String, pattern: String) -> i32 {
     -1
 }
 
+pub fn binary_search_left(nums: &Vec<i32>, target: i32) -> usize {
+    let mut left = 0;
+    let mut right = nums.len();
+    while left < right {
+        let mid = (left + right) >> 1;
+        if nums[mid] >= target {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    left
+}
+
+pub fn binary_search_right(nums: &Vec<i32>, target: i32) -> usize {
+    let mut left = 0;
+    let mut right = nums.len();
+    while left < right {
+        let mid = (left + right) >> 1;
+        if nums[mid] > target {
+            right = mid;
+        } else {
+            left = mid + 1;
+        }
+    }
+    left
+}
+
 
 #[test]
 fn test_quick_sort() {

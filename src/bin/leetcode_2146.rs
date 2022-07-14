@@ -17,7 +17,7 @@ pub fn highest_ranked_k_items(grid: Vec<Vec<i32>>, pricing: Vec<i32>, start: Vec
     if start_price >= pricing[0] && start_price <= pricing[1] {
         heap.push(Reverse((0, start_price, start[0], start[1])));
     }
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     while !q.is_empty() {
         let mut nq = Vec::with_capacity(q.len() * 2);
         for (x, y) in q {

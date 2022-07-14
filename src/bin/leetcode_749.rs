@@ -5,7 +5,7 @@ use std::collections::{HashSet, VecDeque};
 pub fn contain_virus(mut is_infected: Vec<Vec<i32>>) -> i32 {
     let m = is_infected.len();
     let n = is_infected[0].len();
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     let neighbors = |x: usize, y: usize| {
         DIR.iter().filter_map(move |&(dx, dy)| {
             let (nx, ny) = (x as i32 + dx, y as i32 + dy);

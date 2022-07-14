@@ -1,7 +1,7 @@
 //! 不同路径 III
 
 pub fn unique_paths_iii(mut grid: Vec<Vec<i32>>) -> i32 {
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     fn dfs(grid: &mut Vec<Vec<i32>>, x: usize, y: usize, left: i32, result: &mut i32) {
         if grid[x][y] == 2 {
             if left == 0 { *result += 1; }

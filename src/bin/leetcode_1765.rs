@@ -15,7 +15,7 @@ pub fn highest_peak(is_water: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
         }
     }
     let mut height = 0;
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     while !q.is_empty() {
         let mut nq = Vec::with_capacity(q.len() * 4);
         for (x, y) in q {

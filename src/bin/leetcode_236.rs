@@ -4,6 +4,7 @@ use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
+use leetcode::tree;
 use leetcode::treenode::{leetcode_tree, TreeNode};
 
 pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
@@ -109,9 +110,9 @@ pub fn lowest_common_ancestor_tarjan(root: Option<Rc<RefCell<TreeNode>>>, p: Opt
 
 fn main() {
     fn test(func: fn(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>>) {
-        assert_eq!(func(leetcode_tree("[3,5,1,6,2,0,8,null,null,7,4]"), leetcode_tree("5"), leetcode_tree("1")).as_ref().unwrap().borrow().val, 3);
-        assert_eq!(func(leetcode_tree("[3,5,1,6,2,0,8,null,null,7,4]"), leetcode_tree("5"), leetcode_tree("4")).as_ref().unwrap().borrow().val, 5);
-        assert_eq!(func(leetcode_tree("[1,2]"), leetcode_tree("1"), leetcode_tree("2")).as_ref().unwrap().borrow().val, 1);
+        assert_eq!(func(tree![3,5,1,6,2,0,8,null,null,7,4], tree![5], tree![1]).as_ref().unwrap().borrow().val, 3);
+        assert_eq!(func(tree![3,5,1,6,2,0,8,null,null,7,4], tree![5], tree![4]).as_ref().unwrap().borrow().val, 5);
+        assert_eq!(func(tree![1,2], tree![1], tree![2]).as_ref().unwrap().borrow().val, 1);
     }
     test(lowest_common_ancestor);
     test(lowest_common_ancestor_tarjan);

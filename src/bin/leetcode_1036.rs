@@ -35,7 +35,7 @@ pub fn is_escape_possible(blocked: Vec<Vec<i32>>, source: Vec<i32>, target: Vec<
     q.push_back(source);
     seen[source.0][source.1] = true;
     let target = (xm[&target[0]], ym[&target[1]]);
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, 1), (0, -1), (1, 0)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, 1), (0, -1), (1, 0)];
     while !q.is_empty() {
         let (x, y) = q.pop_front().unwrap();
         if (x, y) == target {

@@ -2,6 +2,7 @@
 
 use std::rc::Rc;
 use std::cell::RefCell;
+use leetcode::tree;
 use leetcode::treenode::{leetcode_tree, TreeNode};
 
 pub fn is_cousins(root: Option<Rc<RefCell<TreeNode>>>, x: i32, y: i32) -> bool {
@@ -33,7 +34,7 @@ pub fn is_cousins(root: Option<Rc<RefCell<TreeNode>>>, x: i32, y: i32) -> bool {
 
 
 fn main() {
-    assert_eq!(is_cousins(leetcode_tree("[1,2,3,4]"), 4, 3), false);
-    assert_eq!(is_cousins(leetcode_tree("[1,2,3,null,4,null,5]"), 5, 4), true);
-    assert_eq!(is_cousins(leetcode_tree("[1,2,3,null,4]"), 2, 3), false);
+    assert_eq!(is_cousins(tree![1,2,3,4], 4, 3), false);
+    assert_eq!(is_cousins(tree![1,2,3,null,4,null,5], 5, 4), true);
+    assert_eq!(is_cousins(tree![1,2,3,null,4], 2, 3), false);
 }

@@ -11,6 +11,12 @@ import requests
 logging.basicConfig(format="[%(asctime)s: %(levelname)s] %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+session = requests.session()
+if os.path.exists('cookie'):
+    with open('cookie', 'r', encoding='utf-8') as f:
+        cookie = f.read()
+        session.headers['cookie'] = cookie.strip()
+
 
 def get_problem_detail(slug: str):
     url = "https://leetcode-cn.com/graphql"
@@ -34,7 +40,7 @@ def get_problem_detail(slug: str):
         "variables": {"titleSlug": slug},
         "operationName": "getQuestionDetail"
     }
-    rsp = requests.post(url, json=payload)
+    rsp = session.post(url, json=payload)
     data = rsp.json()['data']['question']
     if not data['codeDefinition']:
         return None
@@ -178,11 +184,11 @@ def get_problems(keyword='', skip=0, limit=50):
     """
     payload = {
         "query": query,
-        "variables": {"categorySlug": "", "skip": skip, "limit": limit, "filters": {}}
+        "variables": {"categorySlug": "algorithms", "skip": skip, "limit": limit, "filters": {}}
     }
     if keyword:
         payload['variables']['filters']["searchKeywords"] = str(keyword)
-    rsp = requests.post(url, json=payload)
+    rsp = session.post(url, json=payload)
     data = rsp.json()['data']['problemsetQuestionList']['questions']
     problem = [Problem(i) for i in data]
     return {i.id: i for i in problem}
@@ -275,16 +281,16 @@ def fix_id():
         with open(file, 'r', encoding='utf-8') as f:
             first_line = f.readline()
             ch_title = first_line.strip('/! ').strip()
-            problems = get_problems(ch_title)
-            problems = [v for k, v in problems.items() if v.ch_title == ch_title]
-            if problems:
-                problem = problems[0]
-                real_id = int(problem.id)
-                if real_id != pid:
-                    to = file.replace(str(pid), str(real_id))
-                    print(f"rename {file} -> {to}")
-                    os.rename(file, to)
-                    subprocess.run(f'/usr/sbin/git add {to}', shell=True)
+        problems = get_problems(ch_title)
+        problems = [v for k, v in problems.items() if v.ch_title == ch_title]
+        if problems:
+            problem = problems[0]
+            real_id = int(problem.id)
+            if real_id != pid:
+                to = file.replace(str(pid), str(real_id))
+                print(f"rename {file} -> {to}")
+                os.rename(file, to)
+                subprocess.run(f'git add {to}', shell=True)
 
 
 if __name__ == '__main__':

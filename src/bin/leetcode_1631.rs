@@ -4,7 +4,7 @@
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, VecDeque};
 
-const DIR: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, 1), (0, -1)];
+static DIR: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, 1), (0, -1)];
 
 struct UnionSet {
     f: Vec<usize>,
@@ -107,7 +107,7 @@ pub fn minimum_effort_path_dijkstra(heights: Vec<Vec<i32>>) -> i32 {
     let n = heights[0].len();
     let mut heap: BinaryHeap<(Reverse<i32>, usize, usize)> = BinaryHeap::new();
     heap.push((Reverse(0), 0, 0));
-    let mut dist = vec![i32::max_value(); m * n];
+    let mut dist = vec![i32::MAX; m * n];
     dist[0] = 0;
     let mut seen = vec![false; m * n];
     while !heap.is_empty() {

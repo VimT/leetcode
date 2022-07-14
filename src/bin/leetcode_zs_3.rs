@@ -8,7 +8,7 @@ pub fn light_sticks(height: i32, width: i32, indices: Vec<i32>) -> Vec<i32> {
     let n = width as usize + 1;
     // 表示每个节点的 四个方向能否访问
     let mut ava = vec![vec![[true; 4]; n]; m];
-    const DIR: [(i32, i32); 4] = [(0, -1), (-1, 0), (0, 1), (1, 0)];
+    static DIR: [(i32, i32); 4] = [(0, -1), (-1, 0), (0, 1), (1, 0)];
     let gun = n + n - 1;
     for idx in indices {
         let x = idx as usize / gun;

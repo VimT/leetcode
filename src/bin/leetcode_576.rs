@@ -1,7 +1,7 @@
 //! 出界的路径数
 
 pub fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     const MOD: i32 = 1e9 as i32 + 7;
     fn dfs(m: i32, n: i32, left: i32, x: i32, y: i32, cache: &mut Vec<Vec<Vec<Option<i32>>>>) -> i32 {
         if left < 0 { return 0; }

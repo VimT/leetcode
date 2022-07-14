@@ -73,7 +73,7 @@ pub fn hit_bricks(grid: Vec<Vec<i32>>, hits: Vec<Vec<i32>>) -> Vec<i32> {
             }
         }
     }
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     for (i, hit) in hits.iter().enumerate().rev() {
         let x = hit[0] as usize;
         let y = hit[1] as usize;

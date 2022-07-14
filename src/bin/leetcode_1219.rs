@@ -1,7 +1,7 @@
 //! 黄金矿工
 
 pub fn get_maximum_gold(grid: Vec<Vec<i32>>) -> i32 {
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     fn dfs(grid: &Vec<Vec<i32>>, vis: &mut Vec<Vec<bool>>, cur: i32, pos: (usize, usize), result: &mut i32) {
         *result = (*result).max(cur);
         for (dx, dy) in DIR {

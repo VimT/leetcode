@@ -2,7 +2,7 @@
 
 use std::collections::VecDeque;
 
-const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
 
 pub fn max_area_of_island(grid: Vec<Vec<i32>>) -> i32 {
     let m = grid.len();

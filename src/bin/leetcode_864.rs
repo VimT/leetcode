@@ -8,7 +8,7 @@ use leetcode::svec;
 /// 把所有关键点找出来组成图，然后dij
 pub fn shortest_path_all_keys(grid: Vec<String>) -> i32 {
     let grid: Vec<Vec<u8>> = grid.into_iter().map(|x| x.into_bytes()).collect();
-    const DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
+    static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     let m = grid.len();
     let n = grid[0].len();
     fn dist_from(grid: &Vec<Vec<u8>>, start: (usize, usize)) -> Vec<(u8, i32)> {

@@ -50,21 +50,21 @@ impl SummaryRanges {
 fn main() {
     let mut sr = SummaryRanges::new();
     sr.add_num(1);      // arr = [1]
-    println!("{:?}", sr.get_intervals()); // 返回 [[1, 1]]
+    assert_eq!(sr.get_intervals(), [[1, 1]]);
     sr.add_num(3);      // arr = [1, 3]
-    println!("{:?}", sr.get_intervals()); // 返回 [[1, 1], [3, 3]]
+    assert_eq!(sr.get_intervals(), [[1, 1], [3, 3]]);
     sr.add_num(7);      // arr = [1, 3, 7]
-    println!("{:?}", sr.get_intervals()); // 返回 [[1, 1], [3, 3], [7, 7]]
+    assert_eq!(sr.get_intervals(), [[1, 1], [3, 3], [7, 7]]);
     sr.add_num(2);      // arr = [1, 2, 3, 7]
-    println!("{:?}", sr.get_intervals()); // 返回 [[1, 3], [7, 7]]
+    assert_eq!(sr.get_intervals(), [[1, 3], [7, 7]]);
     sr.add_num(6);      // arr = [1, 2, 3, 6, 7]
-    println!("{:?}", sr.get_intervals()); // 返回 [[1, 3], [6, 7]]
+    assert_eq!(sr.get_intervals(), [[1, 3], [6, 7]]);
     sr.add_num(2);
-    println!("{:?}", sr.get_intervals());
+    assert_eq!(sr.get_intervals(), [[1, 3], [6, 7]]);
     sr.add_num(10);
-    println!("{:?}", sr.get_intervals());
+    assert_eq!(sr.get_intervals(), [[1, 3], [6, 7], [10, 10]]);
     sr.add_num(11);
-    println!("{:?}", sr.get_intervals());
+    assert_eq!(sr.get_intervals(), [[1, 3], [6, 7], [10, 11]]);
     sr.add_num(9);
-    println!("{:?}", sr.get_intervals());
+    assert_eq!(sr.get_intervals(), [[1, 3], [6, 7], [9, 11]]);
 }
