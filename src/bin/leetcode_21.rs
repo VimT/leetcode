@@ -1,7 +1,7 @@
 //! 合并两个有序链表
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn merge_two_lists(mut l1: Option<Box<ListNode>>, mut l2: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     let mut head = ListNode::new(0);

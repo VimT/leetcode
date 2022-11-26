@@ -5,7 +5,7 @@ use std::cmp::Ordering;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 fn reverse_cmp(a: &[u8], b: &[u8]) -> Ordering {
     let l = a.len().min(b.len());

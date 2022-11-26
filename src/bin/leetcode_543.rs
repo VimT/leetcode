@@ -5,7 +5,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn diameter_of_binary_tree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, result: &mut i32) -> i32 {

@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 /**
  * 从后序遍历的第一个叶子节点开始，假设自己有x个金币，剩余x-1个金币都还给父节点，x-1可能为负数、0、正数

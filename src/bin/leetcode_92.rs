@@ -1,7 +1,7 @@
 //! 反转链表 II
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn reverse_between(mut head: Option<Box<ListNode>>, m: i32, n: i32) -> Option<Box<ListNode>> {
     let mut fake = Some(Box::new(ListNode::new(0)));

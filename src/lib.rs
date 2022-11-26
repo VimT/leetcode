@@ -36,7 +36,7 @@ macro_rules! link {
         Option::<Box<ListNode>>::None
     );
     ($($x:expr),+ $(,)?) => (
-        vec_to_link(vec![$($x),+])
+        $crate::linknode::vec_to_link(vec![$($x),+])
     );
 }
 
@@ -46,7 +46,7 @@ macro_rules! tree {
         Option::<Rc<RefCell<TreeNode>>>::None
     );
     ($($x:expr),+$(,)?) => (
-        leetcode_tree(stringify!($($x),+))
+        $crate::treenode::leetcode_tree(stringify!($($x),+))
     );
 }
 

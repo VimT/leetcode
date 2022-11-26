@@ -5,7 +5,7 @@ use std::mem::swap;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{TreeNode, leetcode_tree};
+use leetcode::treenode::TreeNode;
 
 type Node = Option<Rc<RefCell<TreeNode>>>;
 

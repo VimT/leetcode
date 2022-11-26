@@ -1,7 +1,7 @@
 //! 银联-01. 回文链表
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn is_palindrome(head: Option<Box<ListNode>>) -> bool {
     let mut v = vec![];

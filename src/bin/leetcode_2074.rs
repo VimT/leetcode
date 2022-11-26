@@ -1,7 +1,7 @@
 //! 反转偶数长度组的节点
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn reverse_even_length_groups(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     unsafe fn reverse(head: Option<Box<ListNode>>, len: usize) -> Option<Box<ListNode>> {

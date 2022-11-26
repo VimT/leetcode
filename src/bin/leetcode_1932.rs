@@ -5,7 +5,7 @@ use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn can_merge(trees: Vec<Option<Rc<RefCell<TreeNode>>>>) -> Option<Rc<RefCell<TreeNode>>> {
     let mut leave = HashSet::new();

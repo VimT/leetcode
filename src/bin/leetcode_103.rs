@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn zigzag_level_order(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<Vec<i32>> {
     if root.is_none() { return vec![]; }

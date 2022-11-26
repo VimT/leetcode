@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn largest_values(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     if root.is_none() { return vec![]; }

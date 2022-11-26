@@ -5,7 +5,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn find_target(root: Option<Rc<RefCell<TreeNode>>>, k: i32) -> bool {
     fn find(root: &Option<Rc<RefCell<TreeNode>>>, target: i32) -> bool {

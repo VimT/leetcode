@@ -3,7 +3,7 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 use leetcode::tree;
-use leetcode::treenode::{TreeNode, leetcode_tree};
+use leetcode::treenode::TreeNode;
 
 pub fn average_of_subtree(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, result: &mut i32) -> (i32, i32) {

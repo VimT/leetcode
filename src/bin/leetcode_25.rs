@@ -1,7 +1,7 @@
 //! K 个一组翻转链表
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 /// 黑科技
 pub fn reverse_k_group_black_tech(mut head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {

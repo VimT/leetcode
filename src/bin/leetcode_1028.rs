@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn recover_from_preorder(traversal: String) -> Option<Rc<RefCell<TreeNode>>> {
     fn dfs(traversal: &[u8], idx: &mut usize, cur_level: usize) -> Option<Rc<RefCell<TreeNode>>> {

@@ -1,7 +1,7 @@
 //! 移除链表元素
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn remove_elements(head: Option<Box<ListNode>>, val: i32) -> Option<Box<ListNode>> {
     let mut fake = Some(Box::new(ListNode::new(0)));

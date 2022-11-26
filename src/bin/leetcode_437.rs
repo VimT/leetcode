@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn path_sum(root: Option<Rc<RefCell<TreeNode>>>, target_sum: i32) -> i32 {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, presum: &mut HashMap<i32, i32>, mut cur_sum: i32, target_sum: i32, result: &mut i32) {

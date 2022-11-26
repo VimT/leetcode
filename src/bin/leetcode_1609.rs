@@ -5,7 +5,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn is_even_odd_tree(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
     if root.as_ref().unwrap().borrow().val & 1 == 0 { return false; }

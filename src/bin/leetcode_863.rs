@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn distance_k(root: Option<Rc<RefCell<TreeNode>>>, target: Option<Rc<RefCell<TreeNode>>>, mut k: i32) -> Vec<i32> {
     let mut parent = vec![None; 501];

@@ -1,7 +1,7 @@
 //! 对链表进行插入排序
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn insertion_sort_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     if head.is_none() { return None; }

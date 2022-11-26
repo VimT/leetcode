@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn find_second_minimum_value(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {

@@ -5,7 +5,7 @@ use std::collections::{HashMap, BTreeSet};
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 // merge是求和，更新是设置值，线段树
 struct SegmentTree {

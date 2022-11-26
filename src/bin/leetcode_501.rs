@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn find_mode(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
     fn inner(root: Option<Rc<RefCell<TreeNode>>>, current: &mut i32, current_count: &mut i32, max: &mut i32, ans: &mut Vec<i32>) {

@@ -1,7 +1,7 @@
 //! 删除链表的倒数第 N 个结点
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn remove_nth_from_end(mut head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
     if n == 0 { return head; }

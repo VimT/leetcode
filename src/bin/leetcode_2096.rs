@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn get_directions(root: Option<Rc<RefCell<TreeNode>>>, start_value: i32, dest_value: i32) -> String {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, start_value: i32, dest_value: i32, cur: &mut Vec<u8>, start_road: &mut Vec<u8>, dest_road: &mut Vec<u8>) {

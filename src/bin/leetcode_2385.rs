@@ -1,6 +1,6 @@
 //! 感染二叉树需要的总时间
 
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 use leetcode::tree;
 
 use std::rc::Rc;

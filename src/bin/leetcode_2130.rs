@@ -2,7 +2,7 @@
 
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn pair_sum(head: Option<Box<ListNode>>) -> i32 {
     let mut len = 0;

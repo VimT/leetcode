@@ -3,7 +3,7 @@
 use std::rc::Rc;
 use std::cell::RefCell;
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn is_cousins(root: Option<Rc<RefCell<TreeNode>>>, x: i32, y: i32) -> bool {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, x: i32, y: i32, depth: i32, father: i32, xd: &mut i32, yd: &mut i32, xf: &mut i32, yf: &mut i32) {

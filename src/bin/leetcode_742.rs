@@ -1,7 +1,7 @@
 //! 二叉树最近的叶节点
 
 use std::cell::RefCell;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 use leetcode::tree;
 
 use std::rc::Rc;

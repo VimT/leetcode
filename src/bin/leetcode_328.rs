@@ -1,7 +1,7 @@
 //! 奇偶链表
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn odd_even_list(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     let mut dummy_list1 = Some(Box::new(ListNode::new(0)));

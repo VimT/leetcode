@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{TreeNode, leetcode_tree};
+use leetcode::treenode::TreeNode;
 
 type Tree = Option<Rc<RefCell<TreeNode>>>;
 

@@ -1,7 +1,7 @@
 //! 分隔链表
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn partition(mut head: Option<Box<ListNode>>, x: i32) -> Option<Box<ListNode>> {
     let mut small = Some(Box::new(ListNode::new(0)));

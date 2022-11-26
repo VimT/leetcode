@@ -1,6 +1,6 @@
 //! 计算布尔二叉树的值
 
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 use leetcode::tree;
 
 use std::rc::Rc;

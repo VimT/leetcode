@@ -4,7 +4,7 @@ use std::cmp::Reverse;
 use std::collections::BinaryHeap;
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn merge_k_lists(mut lists: Vec<Option<Box<ListNode>>>) -> Option<Box<ListNode>> {
     let mut heap = BinaryHeap::with_capacity(lists.len());

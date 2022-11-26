@@ -1,7 +1,7 @@
 //! 删除排序链表中的重复元素
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn delete_duplicates(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     if head.is_none() { return head; }

@@ -2,7 +2,7 @@
 
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn merge_nodes(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     let mut result = ListNode::new(0);

@@ -1,6 +1,6 @@
 //! 二进制链表转整数
 
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 use leetcode::link;
 
 pub fn get_decimal_value(head: Option<Box<ListNode>>) -> i32 {

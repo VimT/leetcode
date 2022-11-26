@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn tree2str(root: Option<Rc<RefCell<TreeNode>>>) -> String {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<u8> {

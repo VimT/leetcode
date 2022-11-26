@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import subprocess
+import time
 
 import click
 import requests
@@ -19,7 +20,7 @@ if os.path.exists('cookie'):
 
 
 def get_problem_detail(slug: str):
-    url = "https://leetcode-cn.com/graphql"
+    url = "https://leetcode.cn/graphql"
     query = """
       query getQuestionDetail($titleSlug: String!) {
         question(titleSlug: $titleSlug) {
@@ -99,11 +100,11 @@ class ProblemDetail(object):
             lines.remove('impl Solution {')
             lines.remove('}')
         if 'TreeNode' in code:
-            lines.insert(0, "use leetcode::treenode::{leetcode_tree, TreeNode};")
+            lines.insert(0, "use leetcode::treenode::TreeNode;")
             lines.insert(1, "use leetcode::tree;")
             lines.insert(2, "")
         if 'ListNode' in code:
-            lines.insert(0, "use leetcode::linknode::{ListNode, vec_to_link};")
+            lines.insert(0, "use leetcode::linknode::ListNode;")
             lines.insert(1, "use leetcode::link;")
             lines.insert(2, "")
         if 'svec![' in cases:
@@ -154,7 +155,7 @@ class ProblemDetail(object):
 
 
 def get_problems(keyword='', skip=0, limit=50):
-    url = "https://leetcode-cn.com/graphql"
+    url = "https://leetcode.cn/graphql"
     query = """
     query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
       problemsetQuestionList(
@@ -207,52 +208,54 @@ def cli():
 @click.option('-s', '--slug', is_flag=True)
 @click.option('-m', '--multi', is_flag=True)
 @click.option('-u', '--unorder', is_flag=True)
-@click.argument('pid')
-def get(pid, force, multi, slug, unorder):
-    pid = pid.strip()
-    path = ''
-    if slug:
-        slug = pid
-    else:
-        path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{pid}.rs")
-        if os.path.exists(path):
-            if not force:
-                logger.error(f"path {path} exist")
-                return
-            else:
-                logger.warning(f"will replace {path}")
-        problems = get_problems(pid)
-        problem = problems[str(pid)]
-        slug = problem.key
-    detail = get_problem_detail(slug)
-    if not detail:
-        logger.warning("get empty problem detail")
-        return
-    if path == '':
-        path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{detail.id}.rs")
-        if os.path.exists(path):
-            if not force:
-                logger.error(f"path {path} exist")
-                return
-            else:
-                logger.warning(f"will replace {path}")
-    with open(path, "w", encoding='utf-8') as f:
-        cases = ""
-        try:
-            cases = detail.rust_testcase(multi, unorder)
-        except Exception as e:
-            logger.error(f"generate testcases fail: {e}")
-        f.write(f"//! {detail.ch_title}\n")
-        f.write("\n")
-        f.write(detail.rust_template('\n'.join(cases)))
-        f.write("\n")
-        f.write("\n")
-        f.write("fn main() {\n")
-        f.write('\n'.join(cases))
-        f.write('\n')
-        f.write('}\n')
-    print(path)
-    subprocess.run(f'git add {path}', shell=True)
+@click.argument('pids', nargs=-1)
+def get(pids, force, multi, slug, unorder):
+    for pid in pids:
+        pid = pid.strip()
+        path = ''
+        if slug:
+            slug = pid
+        else:
+            path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{pid}.rs")
+            if os.path.exists(path):
+                if not force:
+                    logger.error(f"path {path} exist")
+                    continue
+                else:
+                    logger.warning(f"will replace {path}")
+            problems = get_problems(pid)
+            problem = problems[str(pid)]
+            slug = problem.key
+        detail = get_problem_detail(slug)
+        if not detail:
+            logger.warning("get empty problem detail")
+            continue
+        if path == '':
+            path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{detail.id}.rs")
+            if os.path.exists(path):
+                if not force:
+                    logger.error(f"path {path} exist")
+                    return
+                else:
+                    logger.warning(f"will replace {path}")
+        with open(path, "w", encoding='utf-8') as f:
+            cases = ""
+            try:
+                cases = detail.rust_testcase(multi, unorder)
+            except Exception as e:
+                logger.error(f"generate testcases fail: {e}")
+            f.write(f"//! {detail.ch_title}\n")
+            f.write("\n")
+            f.write(detail.rust_template('\n'.join(cases)))
+            f.write("\n")
+            f.write("\n")
+            f.write("fn main() {\n")
+            f.write('\n'.join(cases))
+            f.write('\n')
+            f.write('}\n')
+        print(path)
+        subprocess.run(f'git add {path}', shell=True)
+        time.sleep(1)
 
 
 @cli.command('range')

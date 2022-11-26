@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn max_level_sum(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     let mut max = root.as_ref().unwrap().borrow().val;

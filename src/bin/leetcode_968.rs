@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn min_camera_cover(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     /// 状态 a：root 必须放置摄像头的情况下，覆盖整棵树需要的摄像头数目。

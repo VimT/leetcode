@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn count_nodes(root: Option<Rc<RefCell<TreeNode>>>) -> i32 {
     let mut p = root.clone();

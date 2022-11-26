@@ -5,7 +5,7 @@ use std::rc::Rc;
 
 use leetcode::{tree, link};
 use leetcode::linknode::ListNode;
-use leetcode::treenode::{TreeNode, leetcode_tree};
+use leetcode::treenode::TreeNode;
 
 fn vec_to_link(l: Vec<i32>) -> Option<Box<ListNode>> {
     if l.len() == 0 { return None; }

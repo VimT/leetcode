@@ -1,7 +1,7 @@
 //! 重排链表
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn reorder_list(head: &mut Option<Box<ListNode>>) {
     if head.is_none() { return; }

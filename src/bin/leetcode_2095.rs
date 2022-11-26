@@ -1,7 +1,7 @@
 //! 删除链表的中间节点
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn delete_middle(mut head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     let mut len = 0;

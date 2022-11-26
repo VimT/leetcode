@@ -1,6 +1,7 @@
 //! 两数相加 II
 
-use leetcode::linknode::{link_to_vec, ListNode, vec_to_link};
+use leetcode::link;
+use leetcode::linknode::{link_to_vec, ListNode};
 
 pub fn add_two_numbers(l1: Option<Box<ListNode>>, l2: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     #[inline]

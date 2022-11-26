@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 
 pub fn is_unival_tree(root: Option<Rc<RefCell<TreeNode>>>) -> bool {
     let val = root.as_ref().unwrap().borrow().val;

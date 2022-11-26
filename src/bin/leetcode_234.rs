@@ -1,6 +1,6 @@
 //! 回文链表
 
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 use leetcode::link;
 
 pub fn is_palindrome(head: Option<Box<ListNode>>) -> bool {

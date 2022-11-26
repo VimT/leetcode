@@ -4,7 +4,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use leetcode::tree;
-use leetcode::treenode::{TreeNode, leetcode_tree};
+use leetcode::treenode::TreeNode;
 
 struct Codec {}
 

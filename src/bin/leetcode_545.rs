@@ -1,6 +1,6 @@
 //! 二叉树的边界
 
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 use leetcode::tree;
 
 use std::rc::Rc;

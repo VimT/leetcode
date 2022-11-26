@@ -5,7 +5,7 @@ use rand::{Rng, thread_rng};
 use rand::rngs::ThreadRng;
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 struct Solution {
     head: Option<Box<ListNode>>,

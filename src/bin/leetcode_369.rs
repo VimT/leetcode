@@ -1,6 +1,6 @@
 //! 给单链表加一
 
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 use leetcode::link;
 
 pub fn plus_one(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {

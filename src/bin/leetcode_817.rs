@@ -2,7 +2,7 @@
 
 
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn num_components(head: Option<Box<ListNode>>, nums: Vec<i32>) -> i32 {
     let mut map = vec![0; 10001];

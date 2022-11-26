@@ -1,6 +1,6 @@
 //! 找出临界点之间的最小和最大距离
 use leetcode::link;
-use leetcode::linknode::{ListNode, vec_to_link};
+use leetcode::linknode::ListNode;
 
 pub fn nodes_between_critical_points(head: Option<Box<ListNode>>) -> Vec<i32> {
     let mut pre = &head;

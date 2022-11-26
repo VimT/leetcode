@@ -1,6 +1,6 @@
 //! 从字符串生成二叉树
 
-use leetcode::treenode::{leetcode_tree, TreeNode};
+use leetcode::treenode::TreeNode;
 use leetcode::tree;
 
 use std::rc::Rc;
