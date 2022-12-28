@@ -260,6 +260,20 @@ pub fn binary_search_right(nums: &Vec<i32>, target: i32) -> usize {
 }
 
 
+pub fn quick_pow(mut base: i64, mut pow: i64, mod0: i64) -> i64 {
+    base = base % mod0;
+    let mut ans = 1;
+    while pow != 0 {
+        if pow & 1 == 1 {
+            ans = ans * base % mod0;
+        }
+        base = base * base % mod0;
+        pow >>= 1;
+    }
+    ans
+}
+
+
 #[test]
 fn test_quick_sort() {
     let mut elements = vec![2, 1, 5, 4, 7, 9, 5, 2, 1, 0];
