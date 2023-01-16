@@ -195,6 +195,37 @@ def get_problems(keyword='', skip=0, limit=50):
     return {i.id: i for i in problem}
 
 
+def contest_problems(name: str):
+    """return list of
+        category_slug: "contest"
+        credit: 3
+        english_title: "Categorize Box According to Criteria"
+        id: 4658
+        question_id: 2619
+        title: "根据规则将箱子分类"
+        title_slug: "categorize-box-according-to-criteria"
+    """
+    url = f'https://leetcode.cn/contest/api/info/{name}'
+    data = session.get(url).json()
+    return data['questions']
+
+
+def contest_problem_detail(name: str, title_slug: str):
+    url = f'https://leetcode.cn/contest/{name}/problems/{title_slug}/'
+    rsp = session.get(url, allow_redirects=False)
+    if rsp.status_code != 200:
+        raise Exception(f"problem detail response code [{rsp.status_code}] != 200: {rsp.text}")
+    lines = rsp.text.split('\n')
+    pid = [i for i in lines if '<h3>' in i][0].strip().removeprefix('<h3>').partition('.')[0]
+    title = [i for i in lines if 'questionTitle: ' in i][0].strip().removeprefix('questionTitle: ').strip("',")
+    codes_str = [i for i in lines if 'codeDefinition: ' in i][0].strip().removeprefix('codeDefinition: ').strip(',').replace("'", '"')[:-2] + "]"
+    codes = json.loads(codes_str)
+    content = [i for i in lines if 'questionSourceContent: ' in i][0].strip().removeprefix(
+        'questionSourceContent: ').strip("',").encode('utf-8').decode('unicode_escape')
+
+    return ProblemDetail(pid, title, content, {i['value']: i['defaultCode'] for i in codes})
+
+
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -294,6 +325,35 @@ def fix_id():
                 print(f"rename {file} -> {to}")
                 os.rename(file, to)
                 subprocess.run(f'git add {to}', shell=True)
+
+
+@cli.command()
+@click.argument('name')
+def contest(name):
+    for question in contest_problems(name):
+        detail = contest_problem_detail(name, question['title_slug'])
+        path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{detail.id}.rs")
+        if os.path.exists(path):
+            logger.error(f"path {path} exist")
+            return
+        with open(path, "w", encoding='utf-8') as f:
+            cases = ""
+            try:
+                cases = detail.rust_testcase(True, False)
+            except Exception as e:
+                logger.error(f"generate testcases fail: {e}")
+            f.write(f"//! {detail.ch_title}\n")
+            f.write("\n")
+            f.write(detail.rust_template('\n'.join(cases)))
+            f.write("\n")
+            f.write("\n")
+            f.write("fn main() {\n")
+            f.write('\n'.join(cases))
+            f.write('\n')
+            f.write('}\n')
+        print(path)
+        subprocess.run(f'git add {path}', shell=True)
+        time.sleep(1)
 
 
 if __name__ == '__main__':
