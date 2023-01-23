@@ -33,6 +33,7 @@ impl MyCircularDeque {
         true
     }
 
+    #[allow(dead_code)]
     fn delete_front(&mut self) -> bool {
         if self.is_empty() { return false; }
         self.head = (self.head + self.buf.len() + 1) % self.buf.len();

@@ -70,9 +70,13 @@ pub fn remove_subfolders_sort(folder: Vec<String>) -> Vec<String> {
     return res;
 }
 
+
 fn main() {
-    assert_eq!(remove_subfolders_sort(svec!["/a", "/a/b", "/c/d", "/c/d/e", "/c/f"]), svec!["/a", "/c/d", "/c/f"]);
-    assert_eq!(remove_subfolders_sort(svec!["/a", "/a/b/c", "/a/b/d"]), svec!["/a"]);
-    assert_eq!(remove_subfolders_sort(svec!["/a", "/a/b/c", "/a/b/d", "/abc"]), svec!["/a", "/abc"]);
-    assert_eq!(remove_subfolders_sort(svec!["/a/b/c", "/a/b/d", "/a/b/ca"]), svec!["/a/b/c", "/a/b/d", "/a/b/ca"]);
+    fn test(func: fn(folder: Vec<String>) -> Vec<String>) {
+        assert_eq!(func(svec!["/a","/a/b","/c/d","/c/d/e","/c/f"]), vec!["/a", "/c/d", "/c/f"]);
+        assert_eq!(func(svec!["/a","/a/b/c","/a/b/d"]), vec!["/a"]);
+        assert_eq!(func(svec!["/a/b/c","/a/b/ca","/a/b/d"]), vec!["/a/b/c", "/a/b/ca", "/a/b/d"]);
+    }
+    test(remove_subfolders);
+    test(remove_subfolders_sort);
 }

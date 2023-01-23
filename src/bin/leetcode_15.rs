@@ -26,6 +26,6 @@ pub fn three_sum(mut nums: Vec<i32>) -> Vec<Vec<i32>> {
 
 fn main() {
     assert_eq!(three_sum(vec![-1, 0, 1, 2, -1, -4]), vec![vec![-1, -1, 2], vec![-1, 0, 1]]);
-    assert_eq!(three_sum(vec![]), vec![]);
-    assert_eq!(three_sum(vec![0]), vec![]);
+    assert_eq!(three_sum(vec![]), Vec::<Vec<i32>>::new());
+    assert_eq!(three_sum(vec![0]), Vec::<Vec<i32>>::new());
 }

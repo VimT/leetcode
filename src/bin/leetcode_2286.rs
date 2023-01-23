@@ -121,11 +121,6 @@ impl BookMyShow {
         self._print(s, mid, p * 2);
         self._print(mid + 1, t, p * 2 + 1);
     }
-
-    fn print(&self) {
-        self._print(0, self.n as usize - 1, 1);
-        println!("---");
-    }
 }
 
 /// 60ms第一的
@@ -145,7 +140,7 @@ mod other {
 
     impl MaxTree {
         pub fn new(n: usize) -> Self {
-            let mut tree = vec![0; 2 * n - 1];
+            let tree = vec![0; 2 * n - 1];
             Self { tree }
         }
 
@@ -193,7 +188,7 @@ mod other {
 
     impl SumTree {
         pub fn new(n: usize) -> Self {
-            let mut tree = vec![0; 2 * n - 1];
+            let tree = vec![0; 2 * n - 1];
             Self { tree }
         }
 
@@ -285,6 +280,14 @@ mod other {
             false
         }
     }
+
+    pub fn test() {
+        let mut bms = BookMyShow::new(2, 5); // 总共有 2 排，每排 5 个座位。
+        assert_eq!(bms.gather(4, 0), [0, 0]); // 返回 [0, 0] 这一组安排第 0 排 [0, 3] 的座位。
+        assert_eq!(bms.gather(2, 0).is_empty(), true); // 返回 [] 第 0 排只剩下 1 个座位。 所以无法安排 2 个连续座位。
+        assert_eq!(bms.scatter(5, 1), true); // 返回 True 这一组安排第 0 排第 4 个座位和第 1 排 [0, 3] 的座位。
+        assert_eq!(bms.scatter(5, 1), false); // 返回 False 总共只剩下 2 个座位。
+    }
 }
 
 fn main() {
@@ -298,5 +301,7 @@ fn main() {
     assert_eq!(bms.scatter(3, 2), true);
     assert_eq!(bms.gather(10, 2).is_empty(), true);
     assert_eq!(bms.gather(1, 1), vec![1, 0]);
+
+    other::test();
 }
 

@@ -7,7 +7,7 @@ const M: u64 = 1e9 as u64 + 7;
 const B: u64 = 233;
 
 // https://www.strchr.com/hash_functions
-fn hash_word(s: &[u8]) -> usize {
+pub fn hash_word(s: &[u8]) -> usize {
     let mut hash: usize = 0xB16B00B5;
     let m: usize = 33;
     for i in 0..s.len() {

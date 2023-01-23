@@ -37,8 +37,8 @@ impl LRUCache {
         let head = Box::into_raw(Box::new(Node::new(0, 0)));
         let tail = Box::into_raw(Box::new(Node::new(0, 0)));
         unsafe {
-            head.as_mut().unwrap().next = tail;
-            tail.as_mut().unwrap().next = head;
+            (*head).next = tail;
+            (*tail).next = head;
         }
 
         LRUCache {
@@ -71,7 +71,7 @@ impl LRUCache {
             }
             None => {
                 let mut node = if self.cache.len() == self.cap {
-                    let old_key = unsafe { self.tail.as_ref().unwrap().prev.as_ref() }.unwrap().key;
+                    let old_key = unsafe { (*(*self.tail).prev).key };
                     let mut old_node = self.cache.remove(&old_key).unwrap();
                     old_node.key = key;
                     old_node.value = value;
@@ -90,18 +90,18 @@ impl LRUCache {
 
     fn detach(&self, node: NodePtr<i32>) {
         unsafe {
-            node.as_mut().unwrap().prev.as_mut().unwrap().next = node.as_mut().unwrap().next;
-            node.as_mut().unwrap().next.as_mut().unwrap().prev = node.as_mut().unwrap().prev;
+            (*(*node).prev).next = (*node).next;
+            (*(*node).next).prev = (*node).prev;
         }
     }
 
     /// attach to head
     fn attach(&self, node: NodePtr<i32>) {
         unsafe {
-            node.as_mut().unwrap().next = self.head.as_ref().unwrap().next;
-            node.as_mut().unwrap().prev = self.head;
-            self.head.as_mut().unwrap().next = node;
-            node.as_mut().unwrap().next.as_mut().unwrap().prev = node;
+            (*node).next = (*self.head).next;
+            (*node).prev = self.head;
+            (*self.head).next = node;
+            (*(*node).next).prev = node;
         }
     }
 }

@@ -76,7 +76,7 @@ impl LFUCache {
             loop {
                 let nxt = (*p).next;
                 delete(p);
-                Box::from_raw(p);
+                let _ = Box::from_raw(p);
                 println!("free: {:p}", p);
                 if nxt == p { break; }
                 p = nxt;

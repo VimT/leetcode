@@ -35,8 +35,8 @@ pub fn pyramid_transition(bottom: String, mut allowed: Vec<String>) -> bool {
 }
 
 /// 方法不正确
-pub fn pyramid_transition_bit(bottom: String, mut allowed: Vec<String>) -> bool {
-    let mut T = vec![vec![0; 1 << 7]; 1 << 7];
+pub fn pyramid_transition_bit(bottom: String, allowed: Vec<String>) -> bool {
+    let mut t = vec![vec![0; 1 << 7]; 1 << 7];
     for allow in allowed {
         let s = allow.as_bytes();
         let (u, v, w) = (1 << s[0] - b'A', 1 << s[1] - b'A', 1 << s[2] - b'A');
@@ -44,7 +44,7 @@ pub fn pyramid_transition_bit(bottom: String, mut allowed: Vec<String>) -> bool 
             if i & u > 0 {
                 for j in 0..1 << 7 {
                     if j & v > 0 {
-                        T[i][j] |= w;
+                        t[i][j] |= w;
                     }
                 }
             }
@@ -53,7 +53,7 @@ pub fn pyramid_transition_bit(bottom: String, mut allowed: Vec<String>) -> bool 
     let mut state: Vec<usize> = bottom.as_bytes().iter().map(|x| 1 << (*x - b'A')).collect();
     while state.len() > 1 {
         for i in 0..state.len() - 1 {
-            state[i] = T[state[i]][state[i + 1]]
+            state[i] = t[state[i]][state[i + 1]]
         }
         state.pop();
     }

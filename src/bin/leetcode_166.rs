@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 
 pub fn fraction_to_decimal(numerator: i32, denominator: i32) -> String {
-    let mut numerator = numerator as i64;
+    let numerator = numerator as i64;
     let mut denominator = denominator as i64;
     let mut map = HashMap::new();
     if denominator == 0 {
@@ -22,7 +22,7 @@ pub fn fraction_to_decimal(numerator: i32, denominator: i32) -> String {
     if numerator < 0 || denominator < 0 {
         next = next.abs();
         big = big.abs();
-        numerator = numerator.abs();
+        // numerator = numerator.abs();
         denominator = denominator.abs();
     }
     let mut loop_start: i32 = -1;

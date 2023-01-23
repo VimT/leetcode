@@ -37,7 +37,7 @@ impl Drop for SegmentTree {
                 if !(*node).right.is_null() {
                     q.push_back((*node).right);
                 }
-                Box::from_raw(node);
+                let _ = Box::from_raw(node);
             }
         }
     }
@@ -156,6 +156,16 @@ mod diff {
             true
         }
     }
+
+    pub fn test() {
+        let mut c = MyCalendarTwo::new();
+        assert_eq!(c.book(10, 20), true);
+        assert_eq!(c.book(50, 60), true);
+        assert_eq!(c.book(10, 40), true);
+        assert_eq!(c.book(5, 15), false);
+        assert_eq!(c.book(5, 10), true);
+        assert_eq!(c.book(25, 55), true);
+    }
 }
 
 fn main() {
@@ -166,4 +176,6 @@ fn main() {
     assert_eq!(c.book(5, 15), false);
     assert_eq!(c.book(5, 10), true);
     assert_eq!(c.book(25, 55), true);
+
+    diff::test();
 }

@@ -6,12 +6,13 @@ enum NestedInteger {
     List(Vec<NestedInteger>),
 }
 
-struct Solution {
+
+struct NestedIterator {
     parsed: Vec<i32>,
     k: usize,
 }
 
-impl Solution {
+impl NestedIterator {
     pub fn new(nested_list: Vec<NestedInteger>) -> Self {
         let mut v = vec![];
         Self::parse(&mut v, &nested_list);
@@ -38,4 +39,11 @@ impl Solution {
     }
 }
 
-fn main() {}
+fn main() {
+    let mut iter = NestedIterator::new(vec![NestedInteger::List(vec![NestedInteger::Int(1), NestedInteger::Int(1)]), NestedInteger::Int(2), NestedInteger::List(vec![NestedInteger::Int(1), NestedInteger::Int(1)])]);
+    let mut arr = vec![];
+    while iter.has_next() {
+        arr.push(iter.next());
+    }
+    assert_eq!(arr, [1, 1, 2, 1, 1]);
+}

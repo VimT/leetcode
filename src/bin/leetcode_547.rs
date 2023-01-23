@@ -2,7 +2,7 @@
 
 use std::collections::VecDeque;
 
-pub fn find_circle_num(mut is_connected: Vec<Vec<i32>>) -> i32 {
+pub fn find_circle_num(is_connected: Vec<Vec<i32>>) -> i32 {
     let mut ans = 0;
     let len = is_connected.len();
     let mut visited = vec![false; len];

@@ -11,7 +11,7 @@ pub fn mask_pii(s: String) -> String {
         let country_len = news.len() - 10;
         format!("{}***-***-{}", match country_len {
             0 => "".to_string(),
-            _ => ("+".to_string() + &"*".repeat(country_len) + "-")
+            _ => "+".to_string() + &"*".repeat(country_len) + "-"
         }, String::from_utf8_lossy(last))
     }
 }

@@ -4,12 +4,10 @@
 pub fn total_steps(nums: Vec<i32>) -> i32 {
     let len = nums.len();
     let mut s: Vec<(i32, i32)> = vec![];
-    let mut result = 0;
     for i in (0..len).rev() {
         let mut cnt = 0;
         while !s.is_empty() && s.last().unwrap().0 < nums[i] {
             cnt = (cnt + 1).max(s.pop().unwrap().1);
-            result.max(cnt);
         }
         s.push((nums[i], cnt));
     }

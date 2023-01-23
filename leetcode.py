@@ -335,7 +335,7 @@ def contest(name):
         path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{detail.id}.rs")
         if os.path.exists(path):
             logger.error(f"path {path} exist")
-            return
+            continue
         with open(path, "w", encoding='utf-8') as f:
             cases = ""
             try:

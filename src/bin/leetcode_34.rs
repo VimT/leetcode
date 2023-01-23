@@ -7,8 +7,6 @@ pub fn search_range(nums: Vec<i32>, target: i32) -> Vec<i32> {
     if len == 0 { return vec![-1, -1]; }
     let mut left = 0;
     let mut right = len;
-    let mut tl = 0;
-    let mut tr = 0;
 
     while left < right {
         let mid = left + (right - left) / 2;
@@ -19,7 +17,7 @@ pub fn search_range(nums: Vec<i32>, target: i32) -> Vec<i32> {
         }
     }
     if left == len || nums[left] != target { return vec![-1, -1]; }
-    tl = left;
+    let tl = left;
     left = 0;
     right = len;
 
@@ -31,7 +29,7 @@ pub fn search_range(nums: Vec<i32>, target: i32) -> Vec<i32> {
             left = mid + 1;
         }
     }
-    tr = left - 1;
+    let tr = left - 1;
     vec![tl as i32, tr as i32]
 }
 

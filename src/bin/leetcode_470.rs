@@ -1,7 +1,4 @@
 //! 用 Rand7() 实现 Rand10()
-use std::fs::File;
-use std::io::Read;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 static mut CUR: i64 = 9999;
 

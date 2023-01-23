@@ -3,7 +3,6 @@
 /// dp[n] = max(dp[n-1], dp[n-2] + nums[n])
 pub fn rob(nums: Vec<i32>) -> i32 {
     fn my_rob(nums: &[i32]) -> i32 {
-        let len = nums.len();
         let mut cur = 0;
         let mut pre = 0;
         for i in nums {

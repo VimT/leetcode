@@ -37,7 +37,7 @@ impl Drop for SegmentTree {
                 if !(*node).right.is_null() {
                     q.push_back((*node).right);
                 }
-                Box::from_raw(node);
+                let _ = Box::from_raw(node);
             }
         }
     }

@@ -61,9 +61,6 @@ pub fn max_points(points: Vec<Vec<i32>>) -> i32 {
     ans
 }
 
-/// 判断经过此点的斜率，斜率相同说明在同一条直线上
-pub fn max_points_b(points: Vec<Vec<i32>>) -> i32 { 0 }
-
 /// 别人的，排序后，只需要和前一个点组成线？
 pub fn max_points_best(points: Vec<Vec<i32>>) -> i32 {
     let len = points.len();

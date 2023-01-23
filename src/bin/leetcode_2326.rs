@@ -2,7 +2,6 @@
 
 use leetcode::link;
 use leetcode::linknode::ListNode;
-use leetcode::linknode::vec_to_link;
 
 pub fn spiral_matrix(m: i32, n: i32, head: Option<Box<ListNode>>) -> Vec<Vec<i32>> {
     static DIR: [(i32, i32); 4] = [(0, 1), (1, 0), (0, -1), (-1, 0)]; // 右下左上

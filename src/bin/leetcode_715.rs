@@ -36,7 +36,7 @@ impl Drop for SegmentTree {
                 if !(*node).right.is_null() {
                     q.push_back((*node).right);
                 }
-                Box::from_raw(node);
+                let _ = Box::from_raw(node);
             }
         }
     }
@@ -135,7 +135,7 @@ impl RangeModule {
 }
 
 mod stdcode {
-    use std::cmp::Ordering::{Equal, Greater, Less};
+    use std::cmp::Ordering::{Greater, Less};
 
     struct RangeModule {
         itvs: Vec<(i32, i32)>,
@@ -201,6 +201,15 @@ mod stdcode {
             // println!("{:?}", self.itvs);
         }
     }
+
+    pub fn test() {
+        let mut range = RangeModule::new();
+        range.add_range(10, 20);
+        range.remove_range(14, 16);
+        assert_eq!(range.query_range(10, 14), true);
+        assert_eq!(range.query_range(13, 15), false);
+        assert_eq!(range.query_range(16, 17), true);
+    }
 }
 
 fn main() {
@@ -221,4 +230,6 @@ fn main() {
     assert_eq!(range.query_range(2, 4), true);
     assert_eq!(range.query_range(2, 9), true);
     assert_eq!(range.query_range(4, 6), true);
+
+    stdcode::test();
 }

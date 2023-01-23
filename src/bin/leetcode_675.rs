@@ -5,7 +5,7 @@ use std::collections::{BinaryHeap, HashMap, HashSet, VecDeque};
 
 static DIR: [(i32, i32); 4] = [(-1, 0), (0, 1), (1, 0), (0, -1)];
 
-fn astar(forest: &Vec<Vec<i32>>, sx: i32, sy: i32, tx: i32, ty: i32) -> i32 {
+pub fn astar(forest: &Vec<Vec<i32>>, sx: i32, sy: i32, tx: i32, ty: i32) -> i32 {
     let mut heap = BinaryHeap::new();
     let m = forest.len();
     let n = forest[0].len();

@@ -2,7 +2,7 @@
 
 /// dp[i] i->结尾
 pub fn num_decodings(s: String) -> i32 {
-    let mut n: Vec<u8> = s.as_bytes().iter().map(|x| *x - b'0').collect();
+    let n: Vec<u8> = s.as_bytes().iter().map(|x| *x - b'0').collect();
     let mut m = vec![];
     let mut i = 0;
     while i < n.len() {

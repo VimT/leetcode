@@ -1,7 +1,6 @@
 //! baby-names-lcci
 
 
-use std::cmp::Ordering;
 use std::collections::HashMap;
 
 struct UnionSet {
@@ -25,8 +24,8 @@ impl UnionSet {
     }
 
     fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
+        let xx = self.find(x);
+        let yy = self.find(y);
         self.f[yy] = xx;
     }
 }

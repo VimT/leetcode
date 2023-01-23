@@ -28,6 +28,7 @@ impl Robot {
         true
     }
 
+    #[allow(dead_code)]
     fn turn_left(&mut self) {
         self.dir = (self.dir + 3) % 4;
     }

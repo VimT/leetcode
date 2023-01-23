@@ -1,85 +1,81 @@
-pub trait Gcd {
-    /// Determine [greatest common divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor)
-    /// using [`gcd_binary`].
-    ///
-    /// [`gcd_binary`]: #method.gcd_binary
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// use gcd::Gcd;
-    ///
-    /// assert_eq!(0, 0u8.gcd(0));
-    /// assert_eq!(10, 10u8.gcd(0));
-    /// assert_eq!(10, 0u8.gcd(10));
-    /// assert_eq!(10, 10u8.gcd(20));
-    /// assert_eq!(44, 2024u32.gcd(748));
-    /// ```
-    fn gcd(self, other: Self) -> Self;
-    fn lcm(self, other: Self) -> Self;
-    /// Determine [greatest common divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor)
-    /// using the [Binary GCD algorithm](https://en.wikipedia.org/wiki/Binary_GCD_algorithm).
-    fn gcd_binary(self, other: Self) -> Self;
-    /// Determine [greatest common divisor](https://en.wikipedia.org/wiki/Greatest_common_divisor)
-    /// using the [Euclidean algorithm](https://en.wikipedia.org/wiki/Euclidean_algorithm).
-    fn gcd_euclid(self, other: Self) -> Self;
+//! bench：从benchmark来看，gcd2最快。但从实际leetcode运行事件来看，gcd1 = gcd3 < gcd2
+
+pub fn gcd1<T: Ord + Copy + Default + std::ops::Rem<Output=T>>(mut a: T, mut b: T) -> T {
+    if a < b { std::mem::swap(&mut a, &mut b); }
+    while b != T::default() {
+        let r = a % b;
+        a = b;
+        b = r;
+    }
+    a
 }
 
-macro_rules! gcd_impl {
-    ($($t:ty),*) => ($(
-        impl Gcd for $t {
-            fn gcd(self,other: Self) -> Self {
-                self.gcd_binary(other)
-            }
-            fn lcm(self, other: Self) -> Self {
-                self * (other / self.gcd(other))
-            }
-
-            fn gcd_binary(self, mut v: Self) -> Self {
-                let mut u = self;
-                if u == 0 {
-                    return v;
-                }
-                if v == 0 {
-                    return u;
-                }
-                let shift = (u | v).trailing_zeros();
-                u >>= shift;
-                v >>= shift;
-                u >>= u.trailing_zeros();
-                loop {
-                    v >>= v.trailing_zeros();
-                    if u > v {
-                        //XOR swap algorithm
-                        v ^= u;
-                        u ^= v;
-                        v ^= u;
-                    }
-                    v -= u; // Here v >= u.
-                    if v == 0 {
-                        break;
-                    }
-                }
-                u << shift
-            }
-            fn gcd_euclid(self, other: Self) -> Self {
-                // variable names based off Euclidean divison equation: a = b �� q + r
-                let (mut a, mut b) = if self > other {
-                    (self, other)
-                } else {
-                    (other, self)
-                };
-
-                while b != 0 {
-                    let r = a % b;
-                    a = b;
-                    b = r;
-                }
-
-                a
-            }
+pub fn gcd2(mut u: i32, mut v: i32) -> i32 {
+    if u == 0 {
+        return v;
+    }
+    if v == 0 {
+        return u;
+    }
+    let shift = (u | v).trailing_zeros();
+    u >>= shift;
+    v >>= shift;
+    u >>= u.trailing_zeros();
+    loop {
+        v >>= v.trailing_zeros();
+        if u > v {
+            v ^= u;
+            u ^= v;
+            v ^= u;
         }
-    )*)
+        v -= u;
+        if v == 0 {
+            break;
+        }
+    }
+    u << shift
 }
 
-gcd_impl! { u8, u16, u32, u64, u128, usize }
+pub fn gcd3(a: i32, b: i32) -> i32 {
+    if b == 0 { a } else { gcd3(b, a % b) }
+}
+
+
+pub fn lcm(a: i32, b: i32) -> i32 {
+    a * (b / gcd2(a, b))
+}
+
+#[cfg(test)]
+mod tests {
+    extern crate test;
+
+    use super::*;
+    use test::Bencher;
+
+
+    #[test]
+    fn test_gcd() {
+        assert_eq!(gcd1(6usize, 4), 2);
+        assert_eq!(gcd1(6i32, 4), 2);
+        assert_eq!(gcd2(6, 4), 2);
+        assert_eq!(gcd2(6, 0), 6);
+        assert_eq!(gcd1(6, 0), 6);
+        assert_eq!(lcm(6, 4), 12);
+        assert_eq!(gcd1(5702887, 3524578), gcd2(5702887, 3524578));
+    }
+
+    #[bench]
+    fn bench_gcd1(b: &mut Bencher) {
+        b.iter(|| gcd1(5702887, 3524578))  //46ns
+    }
+
+    #[bench]
+    fn bench_gcd2(b: &mut Bencher) {
+        b.iter(|| gcd2(5702887, 3524578))  //17ns
+    }
+
+    #[bench]
+    fn bench_gcd3(b: &mut Bencher) {
+        b.iter(|| gcd3(5702887, 3524578))  //48ns
+    }
+}

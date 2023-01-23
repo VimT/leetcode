@@ -58,6 +58,7 @@ pub fn closest_primes(left: i32, right: i32) -> Vec<i32> {
 }
 
 fn main() {
+    assert_eq!(cal_prime(20), [2, 3, 5, 7, 11, 13, 17, 19]);
     fn test(func: fn(left: i32, right: i32) -> Vec<i32>) {
         assert_eq!(func(10, 19), vec![11, 13]);
         assert_eq!(func(4, 6), vec![-1, -1]);

@@ -7,6 +7,7 @@ unsafe fn guess(num: i32) -> i32 {
     return if num < TARGET { 1 } else if num > TARGET { -1 } else { 0 };
 }
 
+#[allow(non_snake_case)]
 unsafe fn guessNumber(n: i32) -> i32 {
     let mut left = 1;
     let mut right = n;

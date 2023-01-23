@@ -6,7 +6,7 @@ use leetcode::tree;
 use std::rc::Rc;
 use std::cell::RefCell;
 
-pub fn closest_value(mut root: Option<Rc<RefCell<TreeNode>>>, target: f64) -> i32 {
+pub fn closest_value(root: Option<Rc<RefCell<TreeNode>>>, target: f64) -> i32 {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, target: f64, min_diff: &mut f64, result: &mut i32) {
         if root.is_none() { return; }
         let node = root.as_ref().unwrap().borrow();
@@ -22,7 +22,8 @@ pub fn closest_value(mut root: Option<Rc<RefCell<TreeNode>>>, target: f64) -> i3
         }
     }
     let mut result = 0;
-    dfs(root, target, &mut f64::MAX, &mut result);
+    let mut min_diff = f64::MAX;
+    dfs(root, target, &mut min_diff, &mut result);
     result
 }
 

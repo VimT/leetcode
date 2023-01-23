@@ -9,8 +9,8 @@ pub fn find_anagrams(s: String, p: String) -> Vec<i32> {
         return vec![];
     }
     let mut result = vec![];
-    let mut cur = vec![0; 26];
-    let mut target = vec![0; 26];
+    let mut cur = [0; 26];
+    let mut target = [0; 26];
 
     for i in 0..target_len {
         target[(p[i] - b'a') as usize] += 1;

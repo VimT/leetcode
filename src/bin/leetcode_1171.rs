@@ -3,7 +3,7 @@
 use std::collections::HashMap;
 
 use leetcode::link;
-use leetcode::linknode::ListNode;
+use leetcode::linknode::{ListNode, vec_to_link};
 
 pub fn remove_zero_sum_sublists(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     let mut arr = vec![];

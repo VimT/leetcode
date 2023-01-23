@@ -40,4 +40,5 @@ fn main() {
     for (k, v) in count {
         println!("{:?}: {}", k, v);
     }
+    obj.reset();
 }

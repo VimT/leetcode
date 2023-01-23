@@ -42,5 +42,5 @@ pub fn add_operators(num: String, target: i32) -> Vec<String> {
 fn main() {
     assert_eq!(unorder(add_operators(String::from("123"), 6)), vec!["1*2*3", "1+2+3"]);
     assert_eq!(unorder(add_operators(String::from("232"), 8)), vec!["2*3+2", "2+3*2"]);
-    assert_eq!(unorder(add_operators(String::from("3456237490"), 9191)).is_empty(), true);
+    assert_eq!(unorder(add_operators(String::from("3456237490"), 9191)), Vec::<String>::new());
 }

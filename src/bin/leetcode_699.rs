@@ -234,6 +234,32 @@ pub fn falling_squares_compress_segment_tree(positions: Vec<Vec<i32>>) -> Vec<i3
 }
 
 
+pub fn falling_squares_compress_zkw_segment_tree(positions: Vec<Vec<i32>>) -> Vec<i32> {
+    let len = positions.len();
+    let mut set = BTreeSet::new();
+    for pos in &positions {
+        set.insert(pos[0]);
+        set.insert(pos[0] + pos[1] - 1);
+    }
+    let axis: Vec<i32> = set.into_iter().collect();
+    let mut m = HashMap::new();
+    for i in 0..axis.len() {
+        m.insert(axis[i], i);
+    }
+    let mut cur_max = 0;
+    let mut result = Vec::with_capacity(len);
+    let mut tree = ZkwSegmentTree::new(axis.len());
+    for pos in positions {
+        let l = m[&pos[0]];
+        let r = m[&(pos[0] + pos[1] - 1)];
+        let h = tree.query(l, r) + pos[1];
+        tree.update(l, r, h);
+        cur_max = cur_max.max(h);
+        result.push(cur_max);
+    }
+    result
+}
+
 fn main() {
     fn test(func: fn(positions: Vec<Vec<i32>>) -> Vec<i32>) {
         assert_eq!(func(vec![vec![1, 2], vec![2, 3], vec![6, 1]]), vec![2, 5, 5]);
@@ -248,4 +274,5 @@ fn main() {
     test(falling_squares);
     test(falling_squares_compress);
     test(falling_squares_compress_segment_tree);
+    test(falling_squares_compress_zkw_segment_tree);
 }

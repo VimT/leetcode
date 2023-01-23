@@ -41,7 +41,7 @@ impl Drop for MyLinkedList {
             let mut node = self.head;
             for _ in 0..=self.len {
                 let next = (*node).next;
-                Box::from_raw(node);
+                let _ = Box::from_raw(node);
                 node = next;
             }
         }
@@ -111,15 +111,14 @@ impl MyLinkedList {
                 node = (*node).next;
             }
             Node::remove(node);
-            Box::from_raw(node);
+            let _ = Box::from_raw(node);
         }
     }
 }
 
 mod other_weak_rc {
-    use std::borrow::{Borrow, BorrowMut};
-    use std::cell::{RefCell, UnsafeCell};
-    use std::ops::{Add, Deref, Index, IndexMut};
+    use std::cell::{RefCell};
+    use std::ops::Deref;
     use std::rc::{Rc, Weak};
 
     //双向链表：
@@ -170,7 +169,7 @@ mod other_weak_rc {
         fn get_rc(&self, index: i32) -> Option<Rc<RefCell<Node>>> {
             if index >= -1 && index <= self.size {
                 let mut now = self.dummy_head.clone();
-                for i in 0..=index {
+                for _ in 0..=index {
                     let next = now.deref().borrow().next.as_ref().unwrap().clone();
                     now = next;
                 }
@@ -185,7 +184,7 @@ mod other_weak_rc {
         fn add_at_index(&mut self, index: i32, val: i32) {
             if index >= 0 && index <= self.size {
                 //now是index 的前一个。
-                let mut now = self.get_rc(index - 1).unwrap(); //找到index的前一个：
+                let now = self.get_rc(index - 1).unwrap(); //找到index的前一个：
                 let old_nodes = (*now).borrow_mut().next.take().unwrap();
                 let new_rc_node = Node::new_rc_ref_node(val);
                 MyLinkedList::connect(&now, &new_rc_node);
@@ -220,6 +219,16 @@ mod other_weak_rc {
             }
         }
     }
+
+    pub fn test() {
+        let mut list = MyLinkedList::new();
+        list.add_at_head(1);
+        list.add_at_tail(3);
+        list.add_at_index(1, 2);   //链表变为1-> 2-> 3
+        assert_eq!(list.get(1), 2);            //返回2
+        list.delete_at_index(1);  //现在链表是1-> 3
+        assert_eq!(list.get(1), 3);            //返回3
+    }
 }
 
 fn main() {
@@ -234,4 +243,6 @@ fn main() {
     list = MyLinkedList::new();
     list.add_at_tail(1);
     assert_eq!(list.get(0), 1);
+
+    other_weak_rc::test();
 }

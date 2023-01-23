@@ -1,8 +1,8 @@
 //! 棋盘上有效移动组合的数目
 
 pub fn count_combinations(pieces: Vec<String>, mut positions: Vec<Vec<i32>>) -> i32 {
-    static dx: [i32; 8] = [1, -1, 0, 0, 1, -1, -1, 1];
-    static dy: [i32; 8] = [0, 0, 1, -1, 1, -1, 1, -1];
+    static DX: [i32; 8] = [1, -1, 0, 0, 1, -1, -1, 1];
+    static DY: [i32; 8] = [0, 0, 1, -1, 1, -1, 1, -1];
     for i in 0..positions.len() {
         positions[i][0] -= 1;
         positions[i][1] -= 1;
@@ -26,8 +26,8 @@ pub fn count_combinations(pieces: Vec<String>, mut positions: Vec<Vec<i32>>) -> 
                 if mov[i].1 > 0 {
                     moved = true;
                     mov[i].1 -= 1;
-                    curpos[i][0] += dx[mov[i].0];
-                    curpos[i][1] += dy[mov[i].0];
+                    curpos[i][0] += DX[mov[i].0];
+                    curpos[i][1] += DY[mov[i].0];
                 }
             }
             if !moved { return 1; }
@@ -56,8 +56,8 @@ pub fn count_combinations(pieces: Vec<String>, mut positions: Vec<Vec<i32>>) -> 
         };
         for d in min..=max {
             for l in 1..=8 {
-                let x = positions[i][0] + l * dx[d];
-                let y = positions[i][1] + l * dy[d];
+                let x = positions[i][0] + l * DX[d];
+                let y = positions[i][1] + l * DY[d];
                 if x >= 0 && x < 8 && y >= 0 && y < 8 {
                     m[i].0 = d;
                     m[i].1 = l;
