@@ -1,6 +1,7 @@
 //! 以图判树
 
 use std::collections::VecDeque;
+use leetcode::union_set::UnionSet;
 
 /// 判断图是不是树，1.是连通图 2.不存在环
 pub fn valid_tree(n: i32, edges: Vec<Vec<i32>>) -> bool {
@@ -50,40 +51,6 @@ pub fn valid_tree_bfs(n: i32, edges: Vec<Vec<i32>>) -> bool {
     vis.iter().all(|x| *x) && edge_len == 0
 }
 
-
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if xx == yy { return; }
-        if self.size[xx] > self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[xx] = yy;
-        self.size[yy] += self.size[xx];
-    }
-}
 
 /// 并查集
 pub fn valid_tree_us(n: i32, edges: Vec<Vec<i32>>) -> bool {

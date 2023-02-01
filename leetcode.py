@@ -3,10 +3,12 @@ import html
 import json
 import logging
 import os
+import re
 import subprocess
 import time
 
 import click
+import pyperclip
 import requests
 
 logging.basicConfig(format="[%(asctime)s: %(levelname)s] %(message)s", level=logging.INFO)
@@ -91,27 +93,31 @@ class ProblemDetail(object):
         self.ch_title = ch_title
         self.content = content
         self.templates = templates
+        self.unorder = 'any order' in content
 
     def rust_template(self, cases=''):
         code: str = self.templates['rust']
         lines = code.split('\n')
         lines = [i.strip() for i in lines if not i.strip().startswith('//')]
+        main_use = []
         if 'impl Solution {' in lines:
             lines.remove('impl Solution {')
             lines.remove('}')
         if 'TreeNode' in code:
             lines.insert(0, "use leetcode::treenode::TreeNode;")
-            lines.insert(1, "use leetcode::tree;")
+            main_use.append("use leetcode::tree;")
             lines.insert(2, "")
         if 'ListNode' in code:
             lines.insert(0, "use leetcode::linknode::ListNode;")
-            lines.insert(1, "use leetcode::link;")
+            main_use.append("use leetcode::link;")
             lines.insert(2, "")
         if 'svec![' in cases:
-            lines.insert(0, "use leetcode::svec;")
-        return '\n'.join(lines)
+            main_use.append("use leetcode::svec;")
+        if self.unorder:
+            main_use.append('use leetcode::unorder;')
+        return '\n'.join(lines), '\n'.join(main_use)
 
-    def rust_testcase(self, multi, unorder):
+    def rust_testcase(self):
         code = self.templates['rust']
         funcs = [i for i in code.split('\n') if i.strip().startswith('pub fn')]
         if len(funcs) > 1:
@@ -135,22 +141,22 @@ class ProblemDetail(object):
             args = i.split(', ')
             transed = [trans_arg(arg, type) for arg, type in zip(args, args_type)]
             cases.append((f"{','.join(transed)}", trans_arg(o, return_type, True)))
-        if multi:
+        if True:
             origin_func_args = '(' + func.partition('(')[2].partition('{')[0]
             result.append(f"fn test(func: fn{origin_func_args}) {{")
             for func_in, func_out in cases:
-                if unorder:
+                if self.unorder:
                     result.append(f"assert_eq!(unorder(func({func_in})), unorder({func_out}));")
                 else:
                     result.append(f"assert_eq!(func({func_in}), {func_out});")
             result.append("}")
             result.append(f"test({funcname});")
-        else:
-            for func_in, func_out in cases:
-                if unorder:
-                    result.append(f"assert_eq!(unorder({funcname}({func_in})), unorder({func_out}));")
-                else:
-                    result.append(f"assert_eq!({funcname}({func_in}), {func_out});")
+        # else:
+        #     for func_in, func_out in cases:
+        #         if unorder:
+        #             result.append(f"assert_eq!(unorder({funcname}({func_in})), unorder({func_out}));")
+        #         else:
+        #             result.append(f"assert_eq!({funcname}({func_in}), {func_out});")
         return result
 
 
@@ -234,13 +240,34 @@ def cli():
     """generate leetcode rust problem file"""
 
 
+def write(filepath, detail: ProblemDetail):
+    with open(filepath, "w", encoding='utf-8') as f:
+        cases = ""
+        try:
+            cases = detail.rust_testcase()
+        except Exception as e:
+            logger.error(f"generate testcases fail: {e}")
+        f.write(f"//! {detail.ch_title}\n")
+        f.write("\n")
+        code, main_use = detail.rust_template('\n'.join(cases))
+        f.write(code)
+        f.write("\n")
+        f.write("\n")
+        f.write("fn main() {\n")
+        f.write(main_use)
+        f.write('\n'.join(cases))
+        f.write('\n')
+        f.write('}\n')
+    print(filepath)
+    subprocess.run(f'git add {filepath}', shell=True)
+    time.sleep(1)
+
+
 @cli.command()
 @click.option('-f', '--force', is_flag=True)
 @click.option('-s', '--slug', is_flag=True)
-@click.option('-m', '--multi', is_flag=True)
-@click.option('-u', '--unorder', is_flag=True)
 @click.argument('pids', nargs=-1)
-def get(pids, force, multi, slug, unorder):
+def get(pids, force, slug):
     for pid in pids:
         pid = pid.strip()
         path = ''
@@ -269,24 +296,7 @@ def get(pids, force, multi, slug, unorder):
                     return
                 else:
                     logger.warning(f"will replace {path}")
-        with open(path, "w", encoding='utf-8') as f:
-            cases = ""
-            try:
-                cases = detail.rust_testcase(multi, unorder)
-            except Exception as e:
-                logger.error(f"generate testcases fail: {e}")
-            f.write(f"//! {detail.ch_title}\n")
-            f.write("\n")
-            f.write(detail.rust_template('\n'.join(cases)))
-            f.write("\n")
-            f.write("\n")
-            f.write("fn main() {\n")
-            f.write('\n'.join(cases))
-            f.write('\n')
-            f.write('}\n')
-        print(path)
-        subprocess.run(f'git add {path}', shell=True)
-        time.sleep(1)
+        write(path, detail)
 
 
 @cli.command('range')
@@ -336,24 +346,87 @@ def contest(name):
         if os.path.exists(path):
             logger.error(f"path {path} exist")
             continue
-        with open(path, "w", encoding='utf-8') as f:
-            cases = ""
-            try:
-                cases = detail.rust_testcase(True, False)
-            except Exception as e:
-                logger.error(f"generate testcases fail: {e}")
-            f.write(f"//! {detail.ch_title}\n")
-            f.write("\n")
-            f.write(detail.rust_template('\n'.join(cases)))
-            f.write("\n")
-            f.write("\n")
-            f.write("fn main() {\n")
-            f.write('\n'.join(cases))
-            f.write('\n')
-            f.write('}\n')
-        print(path)
-        subprocess.run(f'git add {path}', shell=True)
-        time.sleep(1)
+        write(path, detail)
+
+
+@cli.command()
+@click.option('-f', '--func', 'wanted_func', help="commit function name")
+@click.argument('filename')
+def copy(filename: str, wanted_func):
+    if filename.isdigit():
+        filename = f'src/bin/leetcode_{filename}.rs'
+    with open(filename) as f:
+        content = f.read()
+    content, _, main = content.partition('fn main(')
+    if '::new' in main:
+        pyperclip.copy('\n'.join([i for i in content.split('\n') if not i.startswith('//!')]))
+        return
+    problem_func_name = main.partition('    test(')[2].partition(')')[0]
+    if not problem_func_name:
+        print("unknown problem func name")
+        return
+    use = []
+    problem_funcs = {}
+    other_funcs = {}
+    in_func = False
+    cur_func = []
+    other = []
+    for line in content.split('\n'):
+        if in_func:
+            cur_func.append(line)
+            if line == '}':
+                func = '\n'.join(cur_func)
+                func_name = func.partition('(')[0].partition('fn ')[2]
+                if func_name.startswith(problem_func_name):
+                    problem_funcs[func_name] = func
+                else:
+                    other_funcs[func_name] = func
+                cur_func = []
+                in_func = False
+        elif line and not line.startswith('//!'):
+            if line.startswith('use '):
+                use.append(line)
+            elif line.startswith('pub fn ') or line.startswith('fn '):
+                in_func = True
+                while other and other[-1].startswith('///'):
+                    cur_func.append(other.pop())
+                cur_func.append(line)
+            else:
+                other.append(line)
+
+    clip = pyperclip.paste()
+    if not wanted_func and clip in problem_funcs:
+        wanted_func = clip
+    if wanted_func:
+        func_name, func_body = [(k, v) for k, v in problem_funcs.items() if k.endswith(wanted_func)][0]
+    else:
+        func_name, func_body = problem_func_name, problem_funcs[problem_func_name]
+    result = []
+    for u in use:
+        if 'leetcode::' in u:
+            print(f"please handle {u}")
+            continue
+        prefix, _, names = u.rpartition('::')
+        names = [i.strip() for i in names.strip(';{}').split(',')]
+        used_names = [i for i in names if i in func_body]
+        if used_names:
+            used_names = used_names[0] if len(used_names) == 1 else '{' + ', '.join(used_names) + '}'
+            result.append(f'{prefix}::{used_names};')
+    other_funcs_content = []
+    for other_func_name, other_func_body in other_funcs.items():
+        if other_func_name in func_body:
+            other_funcs_content.append(other_func_body)
+    other_funcs_content = '\n\n'.join(other_funcs_content)
+    for o in other:
+        if o.startswith('static ') or o.startswith('const '):
+            result.append(o)
+    if other_funcs_content:
+        result.append(other_funcs_content)
+    func_body = func_body.replace(func_name, problem_func_name)
+    result.append('impl Solution {')
+    result.extend(['    ' + i for i in func_body.split('\n')])
+    result.append('}')
+    pyperclip.copy('\n'.join(result))
 
 
 if __name__ == '__main__':

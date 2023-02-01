@@ -2,40 +2,7 @@
 
 
 use std::cmp::Reverse;
-
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if xx == yy { return; }
-        if self.size[xx] > self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[xx] = yy;
-        self.size[yy] += self.size[xx];
-    }
-}
+use leetcode::union_set::UnionSet;
 
 // timeout
 pub fn swim_in_water_dfs(grid: Vec<Vec<i32>>) -> i32 {

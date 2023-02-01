@@ -231,32 +231,16 @@ pub fn kmp(s: String, pattern: String) -> i32 {
     -1
 }
 
-pub fn binary_search_left(nums: &Vec<i32>, target: i32) -> usize {
-    let mut left = 0;
-    let mut right = nums.len();
-    while left < right {
-        let mid = (left + right) >> 1;
-        if nums[mid] >= target {
-            right = mid;
-        } else {
-            left = mid + 1;
-        }
-    }
-    left
+pub fn asserting_cmp<T: PartialOrd>(a: &T, b: &T) -> std::cmp::Ordering {
+    a.partial_cmp(b).expect("Comparing incomparable elements")
 }
 
-pub fn binary_search_right(nums: &Vec<i32>, target: i32) -> usize {
-    let mut left = 0;
-    let mut right = nums.len();
-    while left < right {
-        let mid = (left + right) >> 1;
-        if nums[mid] > target {
-            right = mid;
-        } else {
-            left = mid + 1;
-        }
-    }
-    left
+pub fn binary_search_lower<T: PartialOrd>(slice: &[T], key: &T) -> usize {
+    slice.binary_search_by(|x| asserting_cmp(x, key).then(std::cmp::Ordering::Greater)).unwrap_err()
+}
+
+pub fn binary_search_upper<T: PartialOrd>(slice: &[T], key: &T) -> usize {
+    slice.binary_search_by(|x| asserting_cmp(x, key).then(std::cmp::Ordering::Less)).unwrap_err()
 }
 
 

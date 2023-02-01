@@ -1,48 +1,7 @@
 //! 找出知晓秘密的所有专家
 
+use leetcode::union_set::UnionSet;
 use leetcode::unorder;
-
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if xx == yy { return; }
-        if self.size[xx] > self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[xx] = yy;
-        self.size[yy] += self.size[xx];
-    }
-
-    fn isolate(&mut self, x: usize) {
-        if self.f[x] != x {
-            self.f[x] = x;
-            self.size[x] = 1;
-        }
-    }
-}
-
 
 pub fn find_all_people(n: i32, mut meetings: Vec<Vec<i32>>, first_person: i32) -> Vec<i32> {
     meetings.sort_unstable_by_key(|x| x[2]);

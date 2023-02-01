@@ -1,48 +1,6 @@
 //! 尽量减少恶意软件的传播
 
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-    count: usize, // set num
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-            count: n,
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if xx == yy {
-            return;
-        }
-        if self.size[xx] < self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[yy] = xx;
-        self.size[xx] += self.size[yy];
-        self.count -= 1;
-    }
-
-    fn size(&mut self, x: usize) -> usize {
-        let xx = self.find(x);
-        self.size[xx]
-    }
-}
+use leetcode::union_set::UnionSet;
 
 pub fn min_malware_spread(graph: Vec<Vec<i32>>, initial: Vec<i32>) -> i32 {
     let len = graph.len();

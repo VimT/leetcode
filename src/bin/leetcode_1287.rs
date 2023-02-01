@@ -1,13 +1,13 @@
 //! 有序数组中出现次数超过25%的元素
 
-use leetcode::algorithm::{binary_search_left, binary_search_right};
+use leetcode::algorithm::{binary_search_lower, binary_search_upper};
 
 pub fn find_special_integer(arr: Vec<i32>) -> i32 {
     let len = arr.len();
     let span = len / 4 + 1;
     for i in (0..len).step_by(span) {
-        let l = binary_search_left(&arr, arr[i]);
-        let r = binary_search_right(&arr, arr[i]);
+        let l = binary_search_lower(&arr, &arr[i]);
+        let r = binary_search_upper(&arr, &arr[i]);
         if r - l >= span {
             return arr[i];
         }

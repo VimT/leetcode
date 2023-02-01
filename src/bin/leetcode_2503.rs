@@ -2,6 +2,7 @@
 
 
 use std::collections::{BinaryHeap, VecDeque};
+use leetcode::union_set::UnionSet;
 
 /// 从左上角bfs，找出到每个点的所有路径中 路径上最大的点 最小的值。
 /// 最后query即找 <query的点有多少个。
@@ -44,38 +45,6 @@ pub fn max_points(grid: Vec<Vec<i32>>, queries: Vec<i32>) -> Vec<i32> {
     }).collect()
 }
 
-
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        if self.f[x] != x {
-            self.f[x] = self.find(self.f[x]);
-        }
-        self.f[x]
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if xx == yy { return; }
-        if self.size[xx] > self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[xx] = yy;
-        self.size[yy] += self.size[xx];
-    }
-}
 
 /// 并查集
 /// 转换成图，把点权转化成边权，边权大小=max(相连的点）。一个query的答案就是左上角的连通图大小。

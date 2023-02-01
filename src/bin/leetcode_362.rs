@@ -1,6 +1,6 @@
 //! 敲击计数器
 
-use leetcode::algorithm::{binary_search_left, binary_search_right};
+use leetcode::algorithm::{binary_search_lower, binary_search_upper};
 
 struct HitCounter {
     hits: Vec<i32>,
@@ -17,8 +17,8 @@ impl HitCounter {
     }
 
     fn get_hits(&self, timestamp: i32) -> i32 {
-        let right = binary_search_right(&self.hits, timestamp);
-        let left = binary_search_left(&self.hits, timestamp - 299);
+        let right = binary_search_upper(&self.hits, &timestamp);
+        let left = binary_search_lower(&self.hits, &(timestamp - 299));
         (right - left) as i32
     }
 }

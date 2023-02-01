@@ -1,45 +1,6 @@
 //! 打砖块
 
-
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if xx == yy { return; }
-        if self.size[xx] > self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[xx] = yy;
-        self.size[yy] += self.size[xx];
-    }
-
-    fn get_size(&mut self, x: usize) -> usize {
-        let xx = self.find(x);
-        // 以当前结点为根结点的子树的结点总数
-        self.size[xx]
-    }
-}
+use leetcode::union_set::UnionSet;
 
 /// 反向 思考：补上被击碎的砖块以后，有多少个砖块因为这个补上的这个砖块而与屋顶的砖块相连。
 pub fn hit_bricks(grid: Vec<Vec<i32>>, hits: Vec<Vec<i32>>) -> Vec<i32> {
@@ -83,7 +44,7 @@ pub fn hit_bricks(grid: Vec<Vec<i32>>, hits: Vec<Vec<i32>>) -> Vec<i32> {
             continue;
         }
         // 补回之前与屋顶相连的砖块数
-        let origin = us.get_size(size);
+        let origin = us.size(size);
         if x == 0 {
             // 注意：如果补回的这个结点在第 1 行，要告诉并查集它与屋顶相连（逻辑同第 2 步）
             us.union(y, size);
@@ -99,7 +60,7 @@ pub fn hit_bricks(grid: Vec<Vec<i32>>, hits: Vec<Vec<i32>>) -> Vec<i32> {
             }
         }
         // 补回之后与屋顶相连的砖块数
-        let current = us.get_size(size);
+        let current = us.size(size);
         // 减去的 1 是逆向补回的砖块（正向移除的砖块），与 0 比较大小，是因为存在一种情况，添加当前砖块，不会使得与屋顶连接的砖块数更多
         result[i] = 0.max(current as i32 - origin as i32 - 1);
         // 补上这个砖块

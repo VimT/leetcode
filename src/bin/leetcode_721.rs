@@ -3,39 +3,7 @@
 use std::collections::HashMap;
 
 use leetcode::{svec, unorder};
-
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if self.size[xx] < self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[yy] = xx;
-        self.size[xx] += self.size[yy];
-    }
-}
+use leetcode::union_set::UnionSet;
 
 pub fn accounts_merge(accounts: Vec<Vec<String>>) -> Vec<Vec<String>> {
     // id - emails map

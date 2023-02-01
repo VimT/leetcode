@@ -2,39 +2,8 @@
 
 
 use std::collections::BinaryHeap;
-use std::mem::swap;
+use leetcode::union_set::UnionSet;
 
-struct UnionSet {
-    f: Vec<usize>,
-    rank: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            rank: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x { x } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut fx = self.find(x);
-        let mut fy = self.find(y);
-        if fx == fy { return; }
-        if self.rank[fx] < self.rank[fy] {
-            swap(&mut fx, &mut fy)
-        }
-        self.rank[fx] += self.rank[fy];
-        self.f[fy] = fx;
-    }
-}
 
 /// 最小生成树，Kruskal算法
 pub fn minimum_cost(n: i32, mut connections: Vec<Vec<i32>>) -> i32 {
@@ -48,7 +17,7 @@ pub fn minimum_cost(n: i32, mut connections: Vec<Vec<i32>>) -> i32 {
         }
     }
     let root = us.find(0);
-    if us.rank[root] != n as usize {
+    if us.size[root] != n as usize {
         return -1;
     }
     result

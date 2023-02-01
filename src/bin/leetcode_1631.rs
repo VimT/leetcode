@@ -3,41 +3,10 @@
 
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, VecDeque};
+use leetcode::union_set::UnionSet;
 
 static DIR: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, 1), (0, -1)];
 
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            size: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if self.size[xx] < self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[yy] = xx;
-        self.size[xx] += self.size[yy];
-    }
-}
 
 pub fn minimum_effort_path_binary_search(heights: Vec<Vec<i32>>) -> i32 {
     let m = heights.len();

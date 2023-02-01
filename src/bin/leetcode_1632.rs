@@ -1,37 +1,7 @@
 //! 矩阵转换后的秩
 
 use std::collections::{HashMap, VecDeque};
-
-struct UnionSet {
-    size: Vec<usize>,
-    f: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet { size: vec![1; n], f: (0..n).collect() }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, a: usize, b: usize) {
-        let mut aa = self.find(a);
-        let mut bb = self.find(b);
-        if aa == bb { return; }
-        if self.size[aa] > self.size[bb] {
-            std::mem::swap(&mut aa, &mut bb);
-        }
-        self.size[bb] += self.size[aa];
-        self.f[aa] = bb;
-    }
-}
+use leetcode::union_set::UnionSet;
 
 pub fn matrix_rank_transform(matrix: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     let m = matrix.len();

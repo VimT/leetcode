@@ -1,6 +1,7 @@
 //! 你可以安排的最多任务数目
 
 use std::collections::BTreeMap;
+use leetcode::union_set::UnionSet;
 
 // 520ms, n(logn)2
 pub fn max_task_assign(mut tasks: Vec<i32>, mut workers: Vec<i32>, pills: i32, strength: i32) -> i32 {
@@ -46,32 +47,6 @@ pub fn max_task_assign(mut tasks: Vec<i32>, mut workers: Vec<i32>, pills: i32, s
     left as i32
 }
 
-struct UnionSet {
-    f: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let xx = self.find(x);
-        let yy = self.find(y);
-        self.f[xx] = yy;
-    }
-}
 
 // 52ms, nlogn
 pub fn max_task_assign_union_set(mut tasks: Vec<i32>, mut workers: Vec<i32>, pills: i32, strength: i32) -> i32 {
@@ -93,7 +68,7 @@ pub fn max_task_assign_union_set(mut tasks: Vec<i32>, mut workers: Vec<i32>, pil
             while us.find(i + 1) != i + 1 { i += 1; }
             if tasks[i] <= workers[j] {
                 // 不吃药能完成
-                us.union(i + 1, i);
+                us.union_force(i, i + 1);
                 continue;
             }
             // 要吃药
@@ -102,7 +77,7 @@ pub fn max_task_assign_union_set(mut tasks: Vec<i32>, mut workers: Vec<i32>, pil
             // 吃药完成的是 to[j] 或者是最后一个任务
             let z = us.find(to[j].min(mid - 1) + 1);
             if z == 0 { return false; }
-            us.union(z, z - 1);
+            us.union_force(z - 1, z);
         }
         true
     }

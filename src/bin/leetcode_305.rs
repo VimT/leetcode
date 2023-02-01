@@ -1,60 +1,14 @@
 //! 岛屿数量 II
 
-
-struct UnionSet {
-    f: Vec<usize>,
-    size: Vec<usize>,
-    count: usize, // set num
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: vec![n; n],
-            size: vec![1; n],
-            count: 0,
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x {
-            x
-        } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut xx = self.find(x);
-        let mut yy = self.find(y);
-        if xx == yy {
-            return;
-        }
-        if self.size[xx] < self.size[yy] {
-            std::mem::swap(&mut xx, &mut yy);
-        }
-        self.f[yy] = xx;
-        self.size[xx] += self.size[yy];
-        self.count -= 1;
-    }
-
-    fn isolate(&mut self, x: usize) {
-        if self.f[x] != x {
-            self.f[x] = x;
-            self.size[x] = 1;
-            self.count += 1;
-        }
-    }
-
-    fn is_empty(&self, x: usize) -> bool {
-        self.f[x] == self.f.len()
-    }
-}
+use leetcode::union_set::UnionSet;
 
 /// 修改版并查集，最开始都指向len（都是水），添加岛屿==isolate隔离，最后看并查集的set数量
 pub fn num_islands2(m: i32, n: i32, positions: Vec<Vec<i32>>) -> Vec<i32> {
-    let mut us = UnionSet::new((m * n) as usize);
+    let size = (m * n) as usize;
+    let mut us = UnionSet::new(size);
+    us.f.fill(size);
+    us.size[size - 1] = size;
+    us.count = 0;
     static DIR: [(i32, i32); 4] = [(-1, 0), (0, -1), (1, 0), (0, 1)];
     positions.into_iter().map(|pos| {
         let (x, y) = (pos[0], pos[1]);

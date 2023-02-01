@@ -1,38 +1,6 @@
 //! 冗余连接 II
 
-use std::mem::swap;
-
-struct UnionSet {
-    f: Vec<usize>,
-    rank: Vec<usize>,
-}
-
-impl UnionSet {
-    fn new(n: usize) -> Self {
-        UnionSet {
-            f: (0..n).collect(),
-            rank: vec![1; n],
-        }
-    }
-
-    fn find(&mut self, x: usize) -> usize {
-        return if self.f[x] == x { x } else {
-            self.f[x] = self.find(self.f[x]);
-            self.f[x]
-        };
-    }
-
-    fn union(&mut self, x: usize, y: usize) {
-        let mut fx = self.find(x);
-        let mut fy = self.find(y);
-        if fx == fy { return; }
-        if self.rank[fx] < self.rank[fy] {
-            swap(&mut fx, &mut fy)
-        }
-        self.rank[fx] += self.rank[fy];
-        self.f[fy] = fx;
-    }
-}
+use leetcode::union_set::UnionSet;
 
 /// 两种情况：
 /// 1。 附加边指向根节点：肯定有环

@@ -6,6 +6,7 @@ use std::rc::Rc;
 
 use leetcode::tree;
 use leetcode::treenode::TreeNode;
+use leetcode::union_set::UnionSetHashMap;
 
 pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, a: i32, b: i32) -> Option<Rc<RefCell<TreeNode>>> {
@@ -34,44 +35,8 @@ pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<
     dfs(root, p.as_ref().unwrap().borrow().val, q.as_ref().unwrap().borrow().val)
 }
 
-
-struct UnionSet {
-    f: HashMap<i32, i32>,
-}
-
-impl UnionSet {
-    fn new() -> Self {
-        UnionSet {
-            f: HashMap::new()
-        }
-    }
-
-    fn find(&mut self, x: i32) -> i32 {
-        return if let Some(&v) = self.f.get(&x) {
-            if v != x {
-                let result = self.find(v);
-                self.f.insert(x, result);
-                result
-            } else {
-                x
-            }
-        } else {
-            self.f.insert(x, x);
-            x
-        };
-    }
-
-    fn union(&mut self, x: i32, y: i32) {
-        let xx = self.find(x);
-        let yy = self.find(y);
-        if xx != yy {
-            self.f.insert(yy, xx);
-        }
-    }
-}
-
 pub fn lowest_common_ancestor_tarjan(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
-    fn dfs(root: Option<Rc<RefCell<TreeNode>>>, us: &mut UnionSet, vis: &mut HashSet<i32>, query: &HashMap<i32, Vec<i32>>, result: &mut HashMap<i32, Vec<Option<i32>>>) {
+    fn dfs(root: Option<Rc<RefCell<TreeNode>>>, us: &mut UnionSetHashMap<i32>, vis: &mut HashSet<i32>, query: &HashMap<i32, Vec<i32>>, result: &mut HashMap<i32, Vec<Option<i32>>>) {
         if root.is_none() { return; }
         let node = root.as_ref().unwrap().borrow();
         vis.insert(node.val);
@@ -92,7 +57,7 @@ pub fn lowest_common_ancestor_tarjan(root: Option<Rc<RefCell<TreeNode>>>, p: Opt
             }).collect());
         }
     }
-    let mut us = UnionSet::new();
+    let mut us = UnionSetHashMap::new();
     let mut query = HashMap::new();
     let a = p.as_ref().unwrap().borrow().val;
     let b = q.as_ref().unwrap().borrow().val;
