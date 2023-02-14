@@ -1,6 +1,6 @@
 //! 敲击计数器
 
-use leetcode::algorithm::{binary_search_lower, binary_search_upper};
+use std::cmp::Ordering;
 
 struct HitCounter {
     hits: Vec<i32>,
@@ -17,8 +17,8 @@ impl HitCounter {
     }
 
     fn get_hits(&self, timestamp: i32) -> i32 {
-        let right = binary_search_upper(&self.hits, &timestamp);
-        let left = binary_search_lower(&self.hits, &(timestamp - 299));
+        let right = self.hits.binary_search_by(|mid| mid.cmp(&timestamp).then(Ordering::Less)).unwrap_err();
+        let left = self.hits.binary_search_by(|mid| mid.cmp(&(timestamp - 299)).then(Ordering::Greater)).unwrap_err();
         (right - left) as i32
     }
 }

@@ -1,7 +1,7 @@
 //! 花期内花的数目
 
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
-use leetcode::algorithm::{binary_search_lower, binary_search_upper};
 
 /// 差分
 pub fn full_bloom_flowers(flowers: Vec<Vec<i32>>, persons: Vec<i32>) -> Vec<i32> {
@@ -33,7 +33,9 @@ pub fn full_bloom_flowers2(flowers: Vec<Vec<i32>>, persons: Vec<i32>) -> Vec<i32
     starts.sort_unstable();
     ends.sort_unstable();
     persons.into_iter().map(|x| {
-        (binary_search_upper(&starts, &x) - binary_search_lower(&ends, &x)) as i32
+        let r = starts.binary_search_by(|mid| mid.cmp(&x).then(Ordering::Less)).unwrap_err();
+        let l = ends.binary_search_by(|mid| mid.cmp(&x).then(Ordering::Greater)).unwrap_err();
+        (r - l) as i32
     }).collect()
 }
 
