@@ -3,8 +3,6 @@ import html
 import json
 import logging
 import os
-import re
-import subprocess
 import time
 
 import click
@@ -224,7 +222,8 @@ def contest_problem_detail(name: str, title_slug: str):
     lines = rsp.text.split('\n')
     pid = [i for i in lines if '<h3>' in i][0].strip().removeprefix('<h3>').partition('.')[0]
     title = [i for i in lines if 'questionTitle: ' in i][0].strip().removeprefix('questionTitle: ').strip("',")
-    codes_str = [i for i in lines if 'codeDefinition: ' in i][0].strip().removeprefix('codeDefinition: ').strip(',').replace("'", '"')[:-2] + "]"
+    codes_str = [i for i in lines if 'codeDefinition: ' in i][0].strip().removeprefix('codeDefinition: ').strip(
+        ',').replace("'", '"')[:-2] + "]"
     codes = json.loads(codes_str)
     content = [i for i in lines if 'questionSourceContent: ' in i][0].strip().removeprefix(
         'questionSourceContent: ').strip("',").encode('utf-8').decode('unicode_escape')
@@ -259,20 +258,19 @@ def write(filepath, detail: ProblemDetail):
         f.write('\n')
         f.write('}\n')
     print(filepath)
-    subprocess.run(f'git add {filepath}', shell=True)
     time.sleep(1)
 
 
 @cli.command()
 @click.option('-f', '--force', is_flag=True)
-@click.option('-s', '--slug', is_flag=True)
 @click.argument('pids', nargs=-1)
-def get(pids, force, slug):
+def get(pids, force):
     for pid in pids:
         pid = pid.strip()
+
         path = ''
-        if slug:
-            slug = pid
+        if pid.startswith('https://leetcode.cn/problems/'):
+            slug = pid.removeprefix('https://leetcode.cn/problems/').strip('/')
         else:
             path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{pid}.rs")
             if os.path.exists(path):
@@ -299,20 +297,6 @@ def get(pids, force, slug):
         write(path, detail)
 
 
-@cli.command('range')
-@click.argument('start')
-@click.argument('end')
-def range_(start, end):
-    start, end = int(start), int(end)
-    problems = get_problems(skip=start - 1, limit=100)
-    filtered = [int(id) for id in problems if id.isnumeric() and start <= int(id) <= end]
-    for id in filtered:
-        try:
-            get.callback(str(id), False, True, '', False)
-        except Exception as e:
-            logger.error(f"get {id} fail: {e}")
-
-
 @cli.command()
 def fix_id():
     for file in glob.glob("src/bin/leetcode_*.rs"):
@@ -334,7 +318,6 @@ def fix_id():
                 to = file.replace(str(pid), str(real_id))
                 print(f"rename {file} -> {to}")
                 os.rename(file, to)
-                subprocess.run(f'git add {to}', shell=True)
 
 
 @cli.command()
@@ -355,7 +338,7 @@ def contest(name):
 def copy(filename: str, wanted_func):
     if filename.isdigit():
         filename = f'src/bin/leetcode_{filename}.rs'
-    with open(filename) as f:
+    with open(filename, encoding='utf-8') as f:
         content = f.read()
     content, _, main = content.partition('fn main(')
     if '::new' in main:
@@ -376,7 +359,7 @@ def copy(filename: str, wanted_func):
             cur_func.append(line)
             if line == '}':
                 func = '\n'.join(cur_func)
-                func_name = func.partition('(')[0].partition('fn ')[2]
+                func_name = [i for i in cur_func if 'fn ' in i][0].partition('(')[0].partition('fn ')[2]
                 if func_name.startswith(problem_func_name):
                     problem_funcs[func_name] = func
                 else:
@@ -389,7 +372,7 @@ def copy(filename: str, wanted_func):
             elif line.startswith('pub fn ') or line.startswith('fn '):
                 in_func = True
                 while other and other[-1].startswith('///'):
-                    cur_func.append(other.pop())
+                    cur_func.insert(0, other.pop())
                 cur_func.append(line)
             else:
                 other.append(line)

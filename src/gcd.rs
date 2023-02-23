@@ -45,7 +45,7 @@ pub fn lcm(a: i32, b: i32) -> i32 {
     a * (b / gcd2(a, b))
 }
 
-#[cfg(test)]
+#[cfg(bench)]
 mod tests {
     extern crate test;
 

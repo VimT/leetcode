@@ -4,6 +4,7 @@ use std::collections::HashMap;
 
 /// 将大于 8 小时的一天记为 1 分，小于等于 8 小时的一天记为 -1 分
 /// 前缀和，然后问题变成求 最长i-j  presum[j] - presum[i] > 0，用单调栈或者map解决
+/// 注意不能二分：不满足单调性
 pub fn longest_wpi(hours: Vec<i32>) -> i32 {
     let len = hours.len();
     let mut cur_sum = 0;
@@ -21,7 +22,8 @@ pub fn longest_wpi(hours: Vec<i32>) -> i32 {
     result as i32
 }
 
-/// 单调栈, 单调栈的又一种用法: 找 nums[j] > nums[i] 的最大区间长度
+/// 单调栈找 nums[j] > nums[i] 的最大区间长度
+/// 观察可以发现一个重要性质：枚举最大区间长度的左端点，发现左端点是不断下降的。
 pub fn longest_wpi2(hours: Vec<i32>) -> i32 {
     let len = hours.len();
     let mut presum = vec![0; len + 1];

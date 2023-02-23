@@ -115,6 +115,7 @@ pub fn heap_sort<T: Ord>(nums: &mut Vec<T>) {
 }
 
 pub fn nth_element<T: Ord + Copy>(nums: &mut Vec<T>, k: usize) {
+    if nums.is_empty() { return; }
     let mut start = 0;
     let mut end = nums.len() - 1;
     while start < end {

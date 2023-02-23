@@ -41,15 +41,17 @@ pub fn longest_valid_parentheses(s: String) -> i32 {
     ans as i32
 }
 
-/// left right 两个指针，左到右扫一遍，右到左再扫一遍
-pub fn longest_valid_parentheses_double_point(s: String) -> i32 {
-    let (mut left, mut right, mut ans) = (0, 0, 0);
+/// 双指针，不需要额外空间
+/// 从左往右遍历，如果left==right，说明相等，记录最大值。如果right>left，重置为0
+/// 对于 (() 的情况，从右往左进行相同的遍历即可
+pub fn longest_valid_parentheses2(s: String) -> i32 {
+    let (mut left, mut right, mut result) = (0, 0, 0);
     let bytes = s.as_bytes();
     let len = bytes.len();
     for i in 0..len {
         if bytes[i] == b'(' { left += 1; } else { right += 1; }
         if left == right {
-            ans = if ans > 2 * right { ans } else { 2 * right };
+            result = result.max(left * 2);
         } else if right >= left {
             left = 0;
             right = 0;
@@ -60,22 +62,96 @@ pub fn longest_valid_parentheses_double_point(s: String) -> i32 {
     for i in (0..s.len()).rev() {
         if bytes[i] == b'(' { left += 1; } else { right += 1; }
         if left == right {
-            ans = if ans > 2 * left { ans } else { 2 * left };
+            result = result.max(left * 2);
         } else if left >= right {
             left = 0;
             right = 0;
         }
     }
-    ans
+    result
 }
 
+/// 定义 dp[i] 表示以下标 i 字符结尾的最长有效括号的长度
+/// dp[i] = dp[i-1] + dp[i-2-dp[i-1]] + 2 when s[i-1] == b')' and s[i-1-dp[i-1]] == '('
+/// dp[i] = dp[i-1] + 2 when dp[i-1] == b'('
+pub fn longest_valid_parentheses3(s: String) -> i32 {
+    let s = s.as_bytes();
+    let len = s.len();
+    let mut result = 0;
+    let mut dp = vec![0; len + 1];
+    for i in 1..len {
+        if s[i] == b')' {
+            if s[i - 1] == b'(' {
+                dp[i] = if i > 1 { dp[i - 2] } else { 0 } + 2;
+            } else if i > dp[i - 1] && s[i - 1 - dp[i - 1]] == b'(' {
+                dp[i] = dp[i - 1] + if i > 1 + dp[i - 1] { dp[i - 2 - dp[i - 1]] } else { 0 } + 2;
+            }
+            result = result.max(dp[i]);
+        }
+    }
+    result as i32
+}
+
+/// 把能匹配的括号标为true，最后看连续的true有多少个
+pub fn longest_valid_parentheses4(s: String) -> i32 {
+    let mut s = s.into_bytes();
+    let mut stk = vec![];
+    let len = s.len();
+    for i in 0..len {
+        if s[i] == b'(' {
+            stk.push(i);
+        } else if !stk.is_empty() {
+            let j = stk.pop().unwrap();
+            s[i] = 1;
+            s[j] = 1;
+        }
+    }
+    let mut result = 0;
+    let mut cnt = 0;
+    for num in s {
+        if num == 1 {
+            cnt += 1;
+            result = result.max(cnt);
+        } else {
+            cnt = 0;
+        }
+    }
+    result
+}
+
+/// 始终保持栈底元素为当前已经遍历过的元素中「最后一个没有被匹配的右括号的下标」
+pub fn longest_valid_parentheses5(s: String) -> i32 {
+    let s = s.as_bytes();
+    let len = s.len();
+    let mut stk = vec![-1];
+    let mut result = 0;
+    for i in 0..len {
+        if s[i] == b'(' {
+            stk.push(i as i32);
+        } else {
+            stk.pop();
+            if stk.is_empty() {
+                stk.push(i as i32);
+            } else {
+                result = result.max(i as i32 - *stk.last().unwrap());
+            }
+        }
+    }
+    result
+}
 
 fn main() {
     fn test(func: fn(s: String) -> i32) {
         assert_eq!(func(String::from("(()")), 2);
         assert_eq!(func(String::from(")()())")), 4);
         assert_eq!(func(String::from("")), 0);
+        assert_eq!(func(String::from("()")), 2);
+        assert_eq!(func(String::from("())")), 2);
+        assert_eq!(func(String::from("()(())")), 6);
     }
     test(longest_valid_parentheses);
-    test(longest_valid_parentheses_double_point);
+    test(longest_valid_parentheses2);
+    test(longest_valid_parentheses3);
+    test(longest_valid_parentheses4);
+    test(longest_valid_parentheses5);
 }

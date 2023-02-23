@@ -2,7 +2,7 @@
 
 use std::collections::BinaryHeap;
 
-/// dp[i][j]dp[i][j]dp[i][j] 表示在前 i 个数中选择了 j 个不相邻的数的最大和
+/// dp[i][j] 表示在前 i 个数中选择了 j 个不相邻的数的最大和
 /// dp[i][j] = (dp[i-2][j-1] + slice[i]).max(dp[i-2][j-1])
 pub fn max_size_slices(slices: Vec<i32>) -> i32 {
     fn inner(slices: &[i32]) -> i32 {
