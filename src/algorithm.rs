@@ -259,6 +259,23 @@ pub fn quick_pow(mut base: i64, mut pow: i64, mod0: i64) -> i64 {
 }
 
 
+/// 欧拉筛
+pub fn cal_prime(n: usize) -> Vec<usize> {
+    let mut result = vec![];
+    let n = n as usize;
+    let mut is_prime = vec![true; n + 1];
+    for i in 2..=n {
+        if is_prime[i] { result.push(i); }
+        for &p in &result {
+            let p = p as usize;
+            if i * p >= n { break; }
+            is_prime[i * p] = false;
+            if i % p == 0 { break; }
+        }
+    }
+    result
+}
+
 #[test]
 fn test_quick_sort() {
     let mut elements = vec![2, 1, 5, 4, 7, 9, 5, 2, 1, 0];

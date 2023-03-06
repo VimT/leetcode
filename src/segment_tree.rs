@@ -1,4 +1,3 @@
-
 struct SegmentTree {
     tree: Vec<T>,
     lazy: Vec<Option<i32>>,
