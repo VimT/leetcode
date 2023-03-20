@@ -1,6 +1,6 @@
 //! 序列中不同最大公约数的数目
 
-use leetcode::gcd::gcd3;
+use leetcode::gcd::gcd;
 
 /// 从值域的角度看：一个数是不是一串子序列的gcd
 pub fn count_different_subsequence_gc_ds(nums: Vec<i32>) -> i32 {
@@ -14,7 +14,7 @@ pub fn count_different_subsequence_gc_ds(nums: Vec<i32>) -> i32 {
         let mut g = 0;
         for j in (i..=max).step_by(i) {
             if has[j] {
-                g = gcd3(g, j as i32);
+                g = gcd(g, j as i32);
                 if g == i as i32 {
                     result += 1;
                     break;
@@ -43,7 +43,7 @@ pub fn count_different_subsequence_gc_ds2(nums: Vec<i32>) -> i32 {
             // 不要用 (1..=max).step_by()  step_by会挨个遍历过去
             while j <= max {
                 if has[j] {
-                    g = gcd3(g, j as i32);
+                    g = gcd(g, j as i32);
                     if g == i as i32 {
                         result += 1;
                         break;

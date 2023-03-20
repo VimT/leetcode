@@ -1,5 +1,6 @@
 //! 至少有 1 位重复的数字
 
+
 pub fn num_dup_digits_at_most_n(n: i32) -> i32 {
     let mut limit = vec![];
     let mut num = n;
@@ -42,8 +43,55 @@ pub fn num_dup_digits_at_most_n(n: i32) -> i32 {
     n - cnt
 }
 
+/// 数位DP
+/// 转换成求无重复数字的个数
+pub fn num_dup_digits_at_most_n2(n: i32) -> i32 {
+    struct DFS {
+        cache: Vec<Vec<[[i32; 2]; 2]>>,
+        s: Vec<u8>,
+
+    }
+    impl DFS {
+        /// f(i,mask,isLimit,isNum) 表示构造第 i 位及其之后数位的合法方案数
+        /// isLimit 表示当前是否受到了 n 的约束
+        /// mask 表示前面选过的数字集合，换句话说，第 i 位要选的数字不能在 mask 中
+        /// isNum 表示 i 前面的数位是否填了数字，如果true表示填入的数字可以从0开始，如果为false表示可以跳过这个数
+        fn dfs(&mut self, i: usize, mask: usize, is_limit: bool, is_num: bool) -> i32 {
+            if i == self.s.len() { return is_num as i32; }
+            if self.cache[i][mask][is_limit as usize][is_num as usize] != -1 {
+                return self.cache[i][mask][is_limit as usize][is_num as usize];
+            }
+            let mut result = 0;
+            if !is_num {
+                result += self.dfs(i + 1, mask, false, false);
+            }
+            let start = if is_num { 0 } else { 1 };
+            let end = if is_limit { self.s[i] } else { 9 };
+            for num in start..=end {
+                if mask >> num & 1 == 0 {
+                    result += self.dfs(i + 1, mask | 1 << num, is_limit && num == self.s[i], true);
+                }
+            }
+            self.cache[i][mask][is_limit as usize][is_num as usize] = result;
+            result
+        }
+    }
+    let mut s = n.to_string().into_bytes();
+    for n in &mut s {
+        *n -= b'0';
+    }
+    let len = s.len();
+    let mut d = DFS { cache: vec![vec![[[-1; 2]; 2]; 1 << 10]; len], s };
+    n - d.dfs(0, 0, true, false)
+}
+
+
 fn main() {
-    assert_eq!(num_dup_digits_at_most_n(20), 1);
-    assert_eq!(num_dup_digits_at_most_n(100), 10);
-    assert_eq!(num_dup_digits_at_most_n(1000), 262);
+    fn test(func: fn(n: i32) -> i32) {
+        assert_eq!(func(20), 1);
+        assert_eq!(func(100), 10);
+        assert_eq!(func(1000), 262);
+    }
+    test(num_dup_digits_at_most_n);
+    test(num_dup_digits_at_most_n2);
 }

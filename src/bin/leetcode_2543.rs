@@ -1,9 +1,9 @@
 //! 判断一个点是否可以到达
 
-use leetcode::gcd::gcd3;
+use leetcode::gcd::gcd;
 
 pub fn is_reachable(target_x: i32, target_y: i32) -> bool {
-    gcd3(target_x, target_y).count_ones() == 1
+    gcd(target_x, target_y).count_ones() == 1
 }
 
 fn main() {

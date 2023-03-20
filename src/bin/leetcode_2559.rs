@@ -1,27 +1,18 @@
 //! 统计范围内的元音字符串数
 
-fn is_vowel(ch: u8) -> bool {
-    return matches!(ch, b'a'|b'e'|b'i'|b'o'|b'u');
-}
-
-pub fn vowel_strings(words: Vec<String>, queries: Vec<Vec<i32>>) -> Vec<i32> {
-    let len = words.len();
-    let mut presum = vec![0; len + 1];
-    for i in 0..len {
-        let w = words[i].as_bytes();
-        let is = is_vowel(w[0]) && is_vowel(w[w.len() - 1]);
-        presum[i + 1] = presum[i] + is as i32;
-    }
-    queries.into_iter().map(|query| {
-        presum[query[1] as usize + 1] - presum[query[0] as usize]
-    }).collect()
+pub fn vowel_strings(words: Vec<String>, left: i32, right: i32) -> i32 {
+    words[left as usize..=right as usize].iter().filter(|x| {
+        let s = x.as_bytes();
+        let len = s.len();
+        matches!(s[0], b'a'|b'e'|b'i'|b'o'|b'u') && matches!(s[len-1], b'a'|b'e'|b'i'|b'o'|b'u')
+    }).count() as i32
 }
 
 fn main() {
     use leetcode::svec;
-    fn test(func: fn(words: Vec<String>, queries: Vec<Vec<i32>>) -> Vec<i32>) {
-        assert_eq!(func(svec!["aba","bcb","ece","aa","e"], vec![vec![0, 2], vec![1, 4], vec![1, 1]]), vec![2, 3, 0]);
-        assert_eq!(func(svec!["a","e","i"], vec![vec![0, 2], vec![0, 1], vec![2, 2]]), vec![3, 2, 1]);
+    fn test(func: fn(words: Vec<String>, left: i32, right: i32) -> i32) {
+        assert_eq!(func(svec!["are","amy","u"], 0, 2), 2);
+        assert_eq!(func(svec!["hey","aeo","mu","ooo","artro"], 1, 4), 3);
     }
     test(vowel_strings);
 }

@@ -36,8 +36,8 @@ pub fn gcd2(mut u: i32, mut v: i32) -> i32 {
     u << shift
 }
 
-pub fn gcd3(a: i32, b: i32) -> i32 {
-    if b == 0 { a } else { gcd3(b, a % b) }
+pub fn gcd(a: i32, b: i32) -> i32 {
+    if b == 0 { a } else { gcd(b, a % b) }
 }
 
 
@@ -76,6 +76,6 @@ mod tests {
 
     #[bench]
     fn bench_gcd3(b: &mut Bencher) {
-        b.iter(|| gcd3(5702887, 3524578))  //48ns
+        b.iter(|| gcd(5702887, 3524578))  //48ns
     }
 }

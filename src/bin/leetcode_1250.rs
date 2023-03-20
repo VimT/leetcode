@@ -1,13 +1,13 @@
 //! 检查「好数组」
 
-use leetcode::gcd::gcd3;
+use leetcode::gcd::gcd;
 
 /// 裴蜀定理
 /// ax+by=1 has solution x, y if gcd(a,b) = 1.
 pub fn is_good_array(nums: Vec<i32>) -> bool {
     let mut g = 0;
     for num in nums {
-        g = gcd3(num, g);
+        g = gcd(num, g);
     }
     g == 1
 }

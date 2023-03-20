@@ -1,4 +1,4 @@
-pub struct Graph<T> {
+pub struct Graph<T=()> {
     head: Vec<usize>,
     e: Vec<(usize, usize, T)>,
 }
