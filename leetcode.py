@@ -4,6 +4,7 @@ import json
 import logging
 import os
 import time
+from ast import literal_eval
 
 import click
 import pyperclip
@@ -46,7 +47,7 @@ def get_problem_detail(slug: str):
     if not data['codeDefinition']:
         return None
     code = json.loads(data['codeDefinition'])
-    return ProblemDetail(data['questionFrontendId'], data['translatedTitle'], data['content'],
+    return ProblemDetail(data['questionFrontendId'], data['translatedTitle'], data['translatedContent'],
                          {i['value']: i['defaultCode'] for i in code})
 
 
@@ -115,6 +116,46 @@ class ProblemDetail(object):
             main_use.append('use leetcode::unorder;')
         return '\n'.join(lines), '\n'.join(main_use)
 
+    def input_and_output(self):
+        content = self.content
+        lines = content.replace('：', ':').split('\n')
+        n = len(lines)
+        i = 0
+        inputs = []
+        outputs = []
+
+        def clean(line: str):
+            return line.replace('<strong>', '').replace('</strong>', '') \
+                .replace('<b>', '').replace('</b>', '') \
+                .replace('，', ',') \
+                .replace('输入:', '').replace('输出:', '') \
+                .removeprefix('>').strip().strip('`')
+
+        while i < n:
+            if '输入:' in lines[i]:
+                s = clean(lines[i])
+                j = i + 1
+                while not ('输出' in lines[j] or lines[j] == '' or lines[j] == '>'):
+                    line = clean(lines[j])
+                    if ' = ' in line and s:
+                        s += ', '
+                    s += line
+                    j += 1
+                inputs.append(s)
+                i = j
+            elif '输出:' in lines[i]:
+                outputs.append(clean(lines[i]))
+                i += 1
+            else:
+                i += 1
+        outputs += [''] * (len(inputs) - len(outputs))
+        result = []
+        for i, o in zip(inputs, outputs):
+            i = html.unescape(i)
+            o = html.unescape(o)
+            result.append((i, o))
+        return result
+
     def rust_testcase(self):
         code = self.templates['rust']
         funcs = [i for i in code.split('\n') if i.strip().startswith('pub fn')]
@@ -126,16 +167,10 @@ class ProblemDetail(object):
         funcname = funcname.strip().removeprefix('pub fn').strip()
         args_type = [i.partition(':')[2].strip() for i in args.split(', ')]
         return_type = return_.partition('->')[2].strip().partition('{')[0].strip()
-        content = self.content
-        lines = content.split('\n')
-        inputs = [i for i in lines if '<strong>Input:</strong>' in i]
-        outputs = [i for i in lines if '<strong>Output:</strong>' in i]
-        outputs += [''] * (len(inputs) - len(outputs))
+        inputs_output = self.input_and_output()
         result = []
         cases = []
-        for i, o in zip(inputs, outputs):
-            i = html.unescape(i.replace('<strong>Input:</strong>', ''))
-            o = html.unescape(o.replace('<strong>Output:</strong>', ''))
+        for i, o in inputs_output:
             args = i.split(', ')
             transed = [trans_arg(arg, type) for arg, type in zip(args, args_type)]
             cases.append((f"{','.join(transed)}", trans_arg(o, return_type, True)))
@@ -214,6 +249,61 @@ def contest_problems(name: str):
     return data['questions']
 
 
+def season_problems(name: str):
+    """return list of {
+        'title': '补给马车',
+       'titleCn': '补给马车',
+       'titleSlug': 'hqCnmP',
+       'credit': 2,
+       'questionId': '1000560',
+       '__typename': 'ContestQuestionNode'
+       } """
+    url = "https://leetcode.cn/graphql"
+    query = """query contestGroup($slug: String!) {
+      contestGroup(slug: $slug) {
+        title
+        titleCn
+        contestCount
+        contests {
+          title
+          titleCn
+          titleSlug
+          startTime
+          duration
+          registered
+          questions {
+            title
+            titleCn
+            titleSlug
+            credit
+            questionId
+            __typename
+          }
+          teamSettings {
+            maxTeamSize
+            __typename
+          }
+          __typename
+        }
+        __typename
+      }
+    }
+    """
+    payload = {
+        "operationName": "contestGroup",
+        "query": query,
+        "variables": {"slug": name}
+    }
+    rsp = session.post(url, json=payload)
+    data = rsp.json()['data']['contestGroup']['contests']
+    questions = []
+    for ctx in data:
+        for question in ctx['questions']:
+            question['contest_title'] = ctx['titleSlug']
+            questions.append(question)
+    return questions
+
+
 def contest_problem_detail(name: str, title_slug: str):
     url = f'https://leetcode.cn/contest/{name}/problems/{title_slug}/'
     rsp = session.get(url, allow_redirects=False)
@@ -225,8 +315,7 @@ def contest_problem_detail(name: str, title_slug: str):
     codes_str = [i for i in lines if 'codeDefinition: ' in i][0].strip().removeprefix('codeDefinition: ').strip(
         ',').replace("'", '"')[:-2] + "]"
     codes = json.loads(codes_str)
-    content = [i for i in lines if 'questionSourceContent: ' in i][0].strip().removeprefix(
-        'questionSourceContent: ').strip("',").encode('utf-8').decode('unicode_escape')
+    content = literal_eval([i for i in lines if 'questionContent: ' in i][0].strip().removeprefix('questionContent: '))[0]
 
     return ProblemDetail(pid, title, content, {i['value']: i['defaultCode'] for i in codes})
 
@@ -326,6 +415,19 @@ def contest(name):
     for question in contest_problems(name):
         detail = contest_problem_detail(name, question['title_slug'])
         path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{detail.id}.rs")
+        if os.path.exists(path):
+            logger.error(f"path {path} exist")
+            continue
+        write(path, detail)
+
+
+@cli.command()
+@click.argument('season_name')
+def season(season_name):
+    for question in season_problems(season_name):
+        detail = contest_problem_detail(f'season/{season_name}', question['titleSlug'])
+        contest_name = question['contest_title'].replace('-', '_')
+        path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{contest_name}_{detail.id}.rs")
         if os.path.exists(path):
             logger.error(f"path {path} exist")
             continue

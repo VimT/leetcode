@@ -16,7 +16,9 @@ pub fn range_sum(nums: Vec<i32>, n: i32, left: i32, right: i32) -> i32 {
 }
 
 
-/// 可以把nums的前缀和转化成一个有序矩阵，用类似378题的思路 求有序矩阵第k小的数
+/// 可以把nums的前缀和转化成一个有序矩阵：
+/// 前缀和矩阵 S，其在第 i 行第 j 列的元素 s[i][j] 为 nums 的从第 i 个元素到第 j 个元素的和。
+/// 用类似378题的思路 求有序矩阵第k小的数
 /// 复杂度 nlogn
 pub fn range_sum2(nums: Vec<i32>, n: i32, left: i32, right: i32) -> i32 {
     let n = n as usize;
