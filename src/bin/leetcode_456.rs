@@ -4,7 +4,8 @@
 use std::collections::btree_map::Entry;
 use std::collections::BTreeMap;
 
-pub fn find132pattern_right_stack(nums: Vec<i32>) -> bool {
+/// 枚举132的1，用单调栈维护 3和2 的关系： pop出来的是2，在栈里的是3
+pub fn find132pattern(nums: Vec<i32>) -> bool {
     let len = nums.len();
     if len < 3 { return false; }
     let mut s = vec![];
@@ -24,7 +25,7 @@ pub fn find132pattern_right_stack(nums: Vec<i32>) -> bool {
     false
 }
 
-pub fn find132pattern_left_stack(nums: Vec<i32>) -> bool {
+pub fn find132pattern2(nums: Vec<i32>) -> bool {
     let len = nums.len();
     if len < 3 { return false; }
     let mut s = vec![];
@@ -43,7 +44,7 @@ pub fn find132pattern_left_stack(nums: Vec<i32>) -> bool {
     false
 }
 
-pub fn find132pattern_scan3(nums: Vec<i32>) -> bool {
+pub fn find132pattern3(nums: Vec<i32>) -> bool {
     let len = nums.len();
     if len < 3 { return false; }
     let mut tree: BTreeMap<i32, i32> = BTreeMap::new();
@@ -77,7 +78,7 @@ fn main() {
         assert_eq!(func(vec![3, 1, 4, 2]), true);
         assert_eq!(func(vec![-1, 3, 2, 0]), true);
     }
-    test(find132pattern_left_stack);
-    test(find132pattern_scan3);
-    test(find132pattern_right_stack);
+    test(find132pattern);
+    test(find132pattern2);
+    test(find132pattern3);
 }

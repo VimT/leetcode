@@ -1,167 +1,55 @@
 //! 连通两组点的最小成本
 
-use std::collections::VecDeque;
 
-// km
-struct Hungarian<T> {
-    n: usize,
-    // 左集合对应的匹配点
-    matchx: Vec<i32>,
-    // 右集合对应的匹配点
-    matchy: Vec<i32>,
-    // 连接右集合的左点
-    pre: Vec<usize>,
-    // 拜访数组 左
-    visx: Vec<bool>,
-    // 拜访数组 右
-    visy: Vec<bool>,
-    lx: Vec<T>,
-    ly: Vec<T>,
-    g: Vec<Vec<T>>,
-    slack: Vec<T>,
-    q: VecDeque<usize>,
-}
-
-impl Hungarian<i32> {
-    fn new(n: usize, m: usize) -> Self {
-        let maxn = n.max(m);
-        Hungarian {
-            n: maxn,
-            matchx: vec![-1; maxn],
-            matchy: vec![-1; maxn],
-            pre: vec![0; maxn],
-            visx: vec![false; maxn],
-            visy: vec![false; maxn],
-            lx: vec![i32::MIN; maxn],
-            ly: vec![0; maxn],
-            g: vec![vec![0; maxn]; maxn],
-            slack: vec![0; maxn],
-            q: Default::default(),
-        }
-    }
-
-    fn add_edge(&mut self, u: usize, v: usize, w: i32) {
-        // 负值还不如不匹配 因此设为0不影响
-        self.g[u][v] = w.max(0);
-    }
-
-    fn check(&mut self, mut v: usize) -> bool {
-        self.visy[v] = true;
-        if self.matchy[v] != -1 {
-            self.q.push_back(self.matchy[v] as usize);
-            self.visx[self.matchy[v] as usize] = true;
-            return false;
-        }
-        loop {
-            // 找到新的未匹配点 更新匹配点 pre 数组记录着"非匹配边"上与之相连的点
-            self.matchy[v] = self.pre[v] as i32;
-            let tmp = self.matchx[self.pre[v]];
-            self.matchx[self.pre[v]] = v as i32;
-            if tmp == -1 { break; }
-            v = tmp as usize;
-        }
-        true
-    }
-
-    fn bfs(&mut self, i: usize) {
-        self.q.clear();
-        self.q.push_back(i);
-
-        loop {
-            while !self.q.is_empty() {
-                let u = self.q.pop_front().unwrap();
-                for v in 0..self.n {
-                    if !self.visy[v] {
-                        let delta = self.lx[u] + self.ly[v] - self.g[u][v];
-                        if self.slack[v] >= delta {
-                            self.pre[v] = u;
-                            if delta != 0 {
-                                self.slack[v] = delta;
-                            } else if self.check(v) {
-                                // delta=0 代表有机会加入相等子图 找增广路
-                                // 找到就return 重建交错树
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-            // 没有增广路 修改顶标
-            let mut a = i32::MAX;
-            for j in 0..self.n {
-                if !self.visy[j] {
-                    a = a.min(self.slack[j]);
-                }
-            }
-            for j in 0..self.n {
-                if self.visx[j] {//S
-                    self.lx[j] -= a;
-                }
-                if self.visy[j] { //T
-                    self.ly[j] += a;
-                } else { //T'
-                    self.slack[j] -= a;
-                }
-            }
-            for j in 0..self.n {
-                if !self.visy[j] && self.slack[j] == 0 && self.check(j) {
-                    return;
-                }
-            }
-        }
-    }
-
-    fn solve(&mut self) -> i32 {
-        // 初始顶标
-        for i in 0..self.n {
-            for j in 0..self.n {
-                self.lx[i] = self.lx[i].max(self.g[i][j]);
-            }
-        }
-        for i in 0..self.n {
-            self.slack.fill(i32::MAX);
-            self.visx.fill(false);
-            self.visy.fill(false);
-            self.bfs(i);
-        }
-
-        let mut res = 0;
-        // custom
-        for i in 0..self.n {
-            if self.g[i][self.matchx[i] as usize] > 0 {
-                res += self.g[i][self.matchx[i] as usize];
-            } else {
-                self.matchx[i] = -1;
-            }
-        }
-        res
-    }
-}
-
-/// 二分图最大权匹配
+/// dp[i][j] 表示左边组的前i的元素，匹配右边的集合为j时的最小代价。状态压缩，0表示已使用
+/// 边界：dp[0][j] 表示对 j 集合的右边组元素，取 sum( minCost[k] )
 pub fn connect_two_groups(cost: Vec<Vec<i32>>) -> i32 {
-    let n = cost.len();
-    let m = cost[0].len();
-    let mut hg = Hungarian::new(n, m);
-    let mut lmin = vec![i32::MAX; n];
-    let mut rmin = vec![i32::MAX; m];
-    for i in 0..n {
-        for j in 0..m {
-            lmin[i] = lmin[i].min(cost[i][j]);
-            rmin[j] = rmin[j].min(cost[i][j]);
+    let m = cost.len();
+    let n = cost[0].len();
+
+    let mut dp = vec![vec![i32::MAX; 1 << n]; m + 1];
+    let min_cost: Vec<i32> = (0..n).map(|j| (0..m).map(|i| cost[i][j]).min().unwrap()).collect();
+    dp[0].fill(0);
+    for j in 0..1 << n {
+        for k in 0..n {
+            if j >> k & 1 == 0 {
+                dp[0][j] += min_cost[k];
+            }
         }
     }
-    let ans: i32 = lmin.iter().sum::<i32>() + rmin.iter().sum::<i32>();
-    for i in 0..n {
-        for j in 0..m {
-            hg.add_edge(i, j, lmin[i] + rmin[j] - cost[i][j]);
+    for i in 0..m {
+        for j in 0..1 << n {
+            for k in 0..n {
+                dp[i + 1][j] = dp[i + 1][j].min(dp[i][j | 1 << k] + cost[i][k]);
+            }
         }
     }
-    ans - hg.solve()
+    dp[m][0]
 }
 
+/// dp优化：
+/// 1. 空间优化，降一个维度
+/// 2. 初始值可以快速计算
+pub fn connect_two_groups2(cost: Vec<Vec<i32>>) -> i32 {
+    let m = cost.len();
+    let n = cost[0].len();
+    let mut dp = vec![0; 1 << n];
+    for (j, mn) in (0..n).map(|j| (0..m).map(|i| cost[i][j]).min().unwrap()).enumerate() {
+        let bit = 1 << j;
+        for mask in 0..bit {
+            dp[bit | mask] = dp[mask] + mn;
+        }
+    }
+    for row in cost {
+        for j in (0..1 << n).rev() {
+            dp[j] = row.iter().enumerate().map(|(k, &c)| dp[j & !(1 << k)] + c).min().unwrap();
+        }
+    }
+    *dp.last().unwrap()
+}
 
-pub fn connect_two_groups_dp(cost: Vec<Vec<i32>>) -> i32 {
+/// 另一个dp转移，预处理出 左边每个点 对右边集合 的所有代价
+pub fn connect_two_groups3(cost: Vec<Vec<i32>>) -> i32 {
     let m = cost.len();
     let n = cost[0].len();
     let mut cost_matrix = vec![vec![0; 1 << n]; m];
@@ -198,12 +86,15 @@ pub fn connect_two_groups_dp(cost: Vec<Vec<i32>>) -> i32 {
     dp[m - 1][(1 << n) - 1]
 }
 
-
 fn main() {
-    assert_eq!(connect_two_groups_dp(vec![vec![7, 38], vec![43, 44], vec![72, 2], vec![64, 48], vec![90, 32], vec![10, 34], vec![50, 62], vec![99, 20], vec![39, 24]]), 236);
-    assert_eq!(connect_two_groups_dp(vec![vec![80, 96, 44], vec![38, 11, 8], vec![37, 73, 77], vec![77, 33, 57], vec![8, 72, 65], vec![48, 17, 66], vec![58, 62, 80], vec![70, 68, 39]]), 244);
-    assert_eq!(connect_two_groups_dp(vec![vec![15, 96], vec![36, 2]]), 17);
-    assert_eq!(connect_two_groups_dp(vec![vec![1, 3, 5], vec![4, 1, 1], vec![1, 5, 3]]), 4);
-    assert_eq!(connect_two_groups_dp(vec![vec![2, 5, 1], vec![3, 4, 7], vec![8, 1, 2], vec![6, 2, 4], vec![3, 8, 8]]), 10);
+    fn test(func: fn(cost: Vec<Vec<i32>>) -> i32) {
+        assert_eq!(func(vec![vec![15, 96], vec![36, 2]]), 17);
+        assert_eq!(func(vec![vec![7, 38], vec![43, 44], vec![72, 2], vec![64, 48], vec![90, 32], vec![10, 34], vec![50, 62], vec![99, 20], vec![39, 24]]), 236);
+        assert_eq!(func(vec![vec![80, 96, 44], vec![38, 11, 8], vec![37, 73, 77], vec![77, 33, 57], vec![8, 72, 65], vec![48, 17, 66], vec![58, 62, 80], vec![70, 68, 39]]), 244);
+        assert_eq!(func(vec![vec![1, 3, 5], vec![4, 1, 1], vec![1, 5, 3]]), 4);
+        assert_eq!(func(vec![vec![2, 5, 1], vec![3, 4, 7], vec![8, 1, 2], vec![6, 2, 4], vec![3, 8, 8]]), 10);
+    }
+    test(connect_two_groups);
+    test(connect_two_groups2);
 }
 
