@@ -1,5 +1,6 @@
 //! 删除最短的子数组使剩余数组有序
 
+
 pub fn find_length_of_shortest_subarray(mut arr: Vec<i32>) -> i32 {
     arr.insert(0, i32::MIN);
     arr.push(i32::MAX);
@@ -21,8 +22,13 @@ pub fn find_length_of_shortest_subarray(mut arr: Vec<i32>) -> i32 {
     result as i32
 }
 
+
 fn main() {
-    assert_eq!(find_length_of_shortest_subarray(vec![1, 2, 3, 10, 4, 2, 3, 5]), 3);
-    assert_eq!(find_length_of_shortest_subarray(vec![5, 4, 3, 2, 1]), 4);
-    assert_eq!(find_length_of_shortest_subarray(vec![1, 2, 3]), 0);
+    fn test(func: fn(arr: Vec<i32>) -> i32) {
+        assert_eq!(func(vec![1, 2, 3, 10, 4, 2, 3, 5]), 3);
+        assert_eq!(func(vec![5, 4, 3, 2, 1]), 4);
+        assert_eq!(func(vec![1, 2, 3]), 0);
+        assert_eq!(func(vec![1]), 0);
+    }
+    test(find_length_of_shortest_subarray);
 }

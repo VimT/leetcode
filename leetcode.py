@@ -128,6 +128,7 @@ class ProblemDetail(object):
             return line.replace('<strong>', '').replace('</strong>', '') \
                 .replace('<b>', '').replace('</b>', '') \
                 .replace('，', ',') \
+                .replace(' ', '') \
                 .replace('输入:', '').replace('输出:', '') \
                 .removeprefix('>').strip().strip('`')
 
@@ -443,7 +444,7 @@ def copy(filename: str, wanted_func):
     with open(filename, encoding='utf-8') as f:
         content = f.read()
     content, _, main = content.partition('fn main(')
-    if '::new' in main:
+    if '::new' in main and 'fn check(' not in main:
         pyperclip.copy('\n'.join([i for i in content.split('\n') if not i.startswith('//!')]))
         return
     problem_func_name = main.partition('    test(')[2].partition(')')[0]

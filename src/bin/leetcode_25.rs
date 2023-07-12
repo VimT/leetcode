@@ -3,38 +3,6 @@
 use leetcode::link;
 use leetcode::linknode::ListNode;
 
-/// 黑科技
-pub fn reverse_k_group_black_tech(mut head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
-    if k <= 1 || head.is_none() { return head; }
-    let mut p: *mut _ = &mut head;
-    let mut last = [std::ptr::null_mut(); 2];
-    loop {
-        unsafe {
-            let start = p;
-            let mut cur = p;
-            for i in 0..k {
-                cur = if let Some(cur) = (*cur).as_mut() {
-                    &mut cur.next
-                } else {
-                    return head;
-                };
-                if i == 0 { p = cur }
-                if i >= k - 2 { last[(i - k + 2) as usize] = cur }
-            }
-            cur = start;
-            let mut i = 0;
-            for _ in 0..k - 1 {
-                let next = &mut (*cur).as_mut().unwrap().next;
-                // *cur = *last[i]
-                std::ptr::swap_nonoverlapping(cur, last[i], 1);
-                cur = next;
-                i ^= 1;
-            }
-            if i == 1 { std::ptr::swap_nonoverlapping(last[0], last[1], 1) }
-        }
-    }
-}
-
 pub fn reverse_k_group(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
     fn reverse(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
         let mut pre = None;
@@ -72,13 +40,45 @@ pub fn reverse_k_group(head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNo
             let mut next = (*end).as_mut().unwrap().next.take();
             let startp: *mut _ = &mut start;
             (*end).as_mut().unwrap().next = None;
-            (*pre).as_mut().unwrap().next = reverse(start).take();
+            (*pre).as_mut().unwrap().next = reverse(start);
             (*startp).as_mut().unwrap().next = next.take();
             pre = startp;
             end = pre;
         }
     }
     dummy.as_mut().unwrap().next.take()
+}
+
+/// 黑科技
+pub fn reverse_k_group_black_tech(mut head: Option<Box<ListNode>>, k: i32) -> Option<Box<ListNode>> {
+    if k <= 1 || head.is_none() { return head; }
+    let mut p: *mut _ = &mut head;
+    let mut last = [std::ptr::null_mut(); 2];
+    loop {
+        unsafe {
+            let start = p;
+            let mut cur = p;
+            for i in 0..k {
+                cur = if let Some(cur) = (*cur).as_mut() {
+                    &mut cur.next
+                } else {
+                    return head;
+                };
+                if i == 0 { p = cur }
+                if i >= k - 2 { last[(i - k + 2) as usize] = cur }
+            }
+            cur = start;
+            let mut i = 0;
+            for _ in 0..k - 1 {
+                let next = &mut (*cur).as_mut().unwrap().next;
+                // *cur = *last[i]
+                std::ptr::swap_nonoverlapping(cur, last[i], 1);
+                cur = next;
+                i ^= 1;
+            }
+            if i == 1 { std::ptr::swap_nonoverlapping(last[0], last[1], 1) }
+        }
+    }
 }
 
 fn main() {
