@@ -1,12 +1,12 @@
 //! 矩阵转换后的秩
 
 use std::collections::{HashMap, VecDeque};
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn matrix_rank_transform(matrix: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     let m = matrix.len();
     let n = matrix[0].len();
-    let mut us = UnionSet::new(n * m);
+    let mut uf = UnionFind::new(n * m);
     for i in 0..m {
         let mut map: HashMap<i32, Vec<usize>> = HashMap::new();
         for j in 0..n {

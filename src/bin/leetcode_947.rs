@@ -1,9 +1,9 @@
 //! 移除最多的同行或同列石头
 
-use leetcode::union_set::UnionSetHashMap;
+use leetcode::union_find::UnionFindHashMap;
 
 pub fn remove_stones(stones: Vec<Vec<i32>>) -> i32 {
-    let mut us = UnionSetHashMap::new();
+    let mut uf = UnionFindHashMap::new();
     let len = stones.len();
     for stone in stones {
         us.union(stone[0] as usize + 10001, stone[1] as usize);

@@ -2,7 +2,7 @@
 
 
 use std::collections::HashMap;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 
 static mut ZHISHU: [usize; 5133] = [0; 5133];
@@ -26,7 +26,7 @@ pub fn largest_component_size(nums: Vec<i32>) -> i32 {
             }
         }
         let max = *nums.iter().max().unwrap() as usize;
-        let mut us = UnionSet::new(max + 1);
+        let mut uf = UnionFind::new(max + 1);
         let mut m = vec![false; max + 1];
         for &i in &nums {
             m[i as usize] = true;

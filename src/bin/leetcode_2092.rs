@@ -1,11 +1,11 @@
 //! 找出知晓秘密的所有专家
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 use leetcode::unorder;
 
 pub fn find_all_people(n: i32, mut meetings: Vec<Vec<i32>>, first_person: i32) -> Vec<i32> {
     meetings.sort_unstable_by_key(|x| x[2]);
-    let mut us = UnionSet::new(n as usize);
+    let mut uf = UnionFind::new(n as usize);
     let mut ok = vec![false; n as usize];
     ok[0] = true;
     ok[first_person as usize] = true;

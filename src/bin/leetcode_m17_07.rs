@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 use leetcode::svec;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn truly_most_popular(names: Vec<String>, synonyms: Vec<String>) -> Vec<String> {
     let len = names.len();
@@ -35,7 +35,7 @@ pub fn truly_most_popular(names: Vec<String>, synonyms: Vec<String>) -> Vec<Stri
             ns.push(name2.clone());
         }
     }
-    let mut us = UnionSet::new(ns.len());
+    let mut uf = UnionFind::new(ns.len());
 
     for synonym in synonyms {
         let sp = synonym.find(",").unwrap();

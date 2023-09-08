@@ -1,6 +1,6 @@
 //! 冗余连接 II
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 /// 两种情况：
 /// 1。 附加边指向根节点：肯定有环
@@ -8,7 +8,7 @@ use leetcode::union_set::UnionSet;
 /// 所以 并查集找环，parent数组找重复父节点
 pub fn find_redundant_directed_connection(edges: Vec<Vec<i32>>) -> Vec<i32> {
     let len = edges.len();
-    let mut us = UnionSet::new(len + 1);
+    let mut uf = UnionFind::new(len + 1);
     let mut parent = vec![0; len + 1];
     for i in 1..=len {
         parent[i] = i;

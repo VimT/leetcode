@@ -127,6 +127,7 @@ class ProblemDetail(object):
         def clean(line: str):
             return line.replace('<strong>', '').replace('</strong>', '') \
                 .replace('<b>', '').replace('</b>', '') \
+                .replace('<pre>', '').replace('</pre>', '') \
                 .replace('，', ',') \
                 .replace(' ', '') \
                 .replace('输入:', '').replace('输出:', '') \

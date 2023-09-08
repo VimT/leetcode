@@ -1,11 +1,11 @@
 //! 彼此熟识的最早时间
 
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn earliest_acq(mut logs: Vec<Vec<i32>>, n: i32) -> i32 {
     logs.sort_unstable();
-    let mut us = UnionSet::new(n as usize);
+    let mut uf = UnionFind::new(n as usize);
     for log in logs {
         us.union(log[1] as usize, log[2] as usize);
         let root = us.find(log[1] as usize);

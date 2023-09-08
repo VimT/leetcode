@@ -1,7 +1,7 @@
 //! 验证二叉树
 
 use std::collections::VecDeque;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 /// 拓扑排序
 pub fn validate_binary_tree_nodes(n: i32, left_child: Vec<i32>, right_child: Vec<i32>) -> bool {
@@ -40,7 +40,7 @@ pub fn validate_binary_tree_nodes(n: i32, left_child: Vec<i32>, right_child: Vec
 /// 并查集
 pub fn validate_binary_tree_nodes2(n: i32, left_child: Vec<i32>, right_child: Vec<i32>) -> bool {
     let n = n as usize;
-    let mut us = UnionSet::new(n);
+    let mut uf = UnionFind::new(n);
     let mut ind = vec![false; n];
     for ((i, l), r) in (0..n).zip(left_child).zip(right_child) {
         let pp = us.find(i);

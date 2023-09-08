@@ -2,7 +2,7 @@
 
 
 use std::cmp::Reverse;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 // timeout
 pub fn swim_in_water_dfs(grid: Vec<Vec<i32>>) -> i32 {
@@ -61,7 +61,7 @@ pub fn swim_in_water_binary_dfs(grid: Vec<Vec<i32>>) -> i32 {
     left
 }
 
-pub fn swim_in_water_union_set(grid: Vec<Vec<i32>>) -> i32 {
+pub fn swim_in_water_union_find(grid: Vec<Vec<i32>>) -> i32 {
     let n = grid.len();
     let mut edges = Vec::with_capacity(n * n * 2);
     for i in 0..n {
@@ -76,7 +76,7 @@ pub fn swim_in_water_union_set(grid: Vec<Vec<i32>>) -> i32 {
         }
     }
     edges.sort_unstable_by(|x, y| x.2.cmp(&y.2));
-    let mut us = UnionSet::new(edges.len());
+    let mut uf = UnionFind::new(edges.len());
     for edge in edges {
         us.union(edge.0, edge.1);
         if us.find(0) == us.find(n * n - 1) {
@@ -151,5 +151,5 @@ fn main() {
     test(swim_in_water_binary_dfs);
     test(swim_in_water_dfs);
     test(swim_in_water_dijkstra);
-    test(swim_in_water_union_set);
+    test(swim_in_water_union_find);
 }

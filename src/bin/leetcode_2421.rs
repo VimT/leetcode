@@ -1,6 +1,6 @@
 //! 好路径的数目
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn number_of_good_paths(vals: Vec<i32>, edges: Vec<Vec<i32>>) -> i32 {
     let len = vals.len();
@@ -9,7 +9,7 @@ pub fn number_of_good_paths(vals: Vec<i32>, edges: Vec<Vec<i32>>) -> i32 {
         g[edge[0] as usize].push(edge[1] as usize);
         g[edge[1] as usize].push(edge[0] as usize);
     }
-    let mut us = UnionSet::new(len);
+    let mut uf = UnionFind::new(len);
     let mut result = len;
     let mut vi: Vec<(i32, usize)> = vals.iter().enumerate().map(|x| (*x.1, x.0)).collect();
     vi.sort_unstable();

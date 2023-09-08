@@ -1,11 +1,11 @@
 //! 岛屿数量 II
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 /// 修改版并查集，最开始都指向len（都是水），添加岛屿==isolate隔离，最后看并查集的set数量
 pub fn num_islands2(m: i32, n: i32, positions: Vec<Vec<i32>>) -> Vec<i32> {
     let size = (m * n) as usize;
-    let mut us = UnionSet::new(size);
+    let mut uf = UnionFind::new(size);
     us.f.fill(size);
     us.size[size - 1] = size;
     us.count = 0;

@@ -1,6 +1,5 @@
 //! 两两交换链表中的节点
 
-use leetcode::link;
 use leetcode::linknode::ListNode;
 
 pub fn swap_pairs(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
@@ -24,8 +23,30 @@ pub fn swap_pairs(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
     dummy.next
 }
 
+pub fn swap_pairs2(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+    fn inner(head: Option<Box<ListNode>>) -> Option<Box<ListNode>> {
+        head.and_then(|mut n| {
+            match n.next {
+                None => Some(n),
+                Some(mut m) => {
+                    n.next = inner(m.next);
+                    m.next = Some(n);
+                    Some(m)
+                }
+            }
+        })
+    }
+    inner(head)
+}
+
+
 fn main() {
-    assert_eq!(swap_pairs(link![1, 2, 3, 4]), link![2, 1, 4, 3]);
-    assert_eq!(swap_pairs(link![]), link![]);
-    assert_eq!(swap_pairs(link![1]), link![1]);
+    use leetcode::link;
+    fn test(func: fn(head: Option<Box<ListNode>>) -> Option<Box<ListNode>>) {
+        assert_eq!(func(link![1,2,3,4]), link![2,1,4,3]);
+        assert_eq!(func(link![]), link![]);
+        assert_eq!(func(link![1]), link![1]);
+    }
+    test(swap_pairs);
+    test(swap_pairs2);
 }

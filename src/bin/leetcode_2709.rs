@@ -2,13 +2,13 @@
 
 
 use leetcode::algorithm::cal_lpf;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 /// 一个数的所有质因数之间有一条无向边，判断质因数组成的图是不是连通图
 pub fn can_traverse_all_pairs(nums: Vec<i32>) -> bool {
     if nums.len() == 1 { return true; }
     let len = 1e5 as usize + 1;
-    let mut us = UnionSet::new(len);
+    let mut uf = UnionFind::new(len);
     let mut seen = vec![false; len];
     for mut num in nums {
         if num == 1 { return false; }
@@ -45,7 +45,7 @@ pub fn can_traverse_all_pairs2(nums: Vec<i32>) -> bool {
     static mut LPF: Vec<i32> = vec![];
     unsafe {
         if LPF.is_empty() { LPF = cal_lpf(MX); }
-        let mut us = UnionSet::new(nums.len() + MX);
+        let mut uf = UnionFind::new(nums.len() + MX);
         let len = nums.len();
         for (i, mut num) in nums.into_iter().enumerate() {
             while num > 1 {

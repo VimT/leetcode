@@ -1,15 +1,15 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-pub struct UnionSet {
+pub struct UnionFind {
     pub f: Vec<usize>,
     pub size: Vec<usize>,
     pub count: usize, // set num
 }
 
-impl UnionSet {
+impl UnionFind {
     pub fn new(n: usize) -> Self {
-        UnionSet {
+        UnionFind {
             f: (0..n).collect(),
             size: vec![1; n],
             count: n,
@@ -25,11 +25,11 @@ impl UnionSet {
         };
     }
 
-    pub fn union(&mut self, x: usize, y: usize) {
+    pub fn union(&mut self, x: usize, y: usize) -> bool {
         let mut parent = self.find(x);
         let mut son = self.find(y);
         if parent == son {
-            return;
+            return false;
         }
         if self.size[parent] < self.size[son] {
             std::mem::swap(&mut parent, &mut son);
@@ -37,6 +37,7 @@ impl UnionSet {
         self.f[son] = parent;
         self.size[parent] += self.size[son];
         self.count -= 1;
+        true
     }
 
     pub fn union_force(&mut self, parent: usize, son: usize) {
@@ -70,12 +71,12 @@ impl UnionSet {
 }
 
 
-pub struct UnionSetHashMap<K> {
+pub struct UnionFindHashMap<K> {
     f: HashMap<K, K>,
     pub count: usize,
 }
 
-impl<K: Copy + Eq + Hash> UnionSetHashMap<K> {
+impl<K: Copy + Eq + Hash> UnionFindHashMap<K> {
     pub fn new() -> Self {
         Self {
             f: HashMap::new(),

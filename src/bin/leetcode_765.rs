@@ -1,7 +1,7 @@
 //! 情侣牵手
 
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn min_swaps_couples(mut row: Vec<i32>) -> i32 {
     let mut ans = 0;
@@ -25,7 +25,7 @@ pub fn min_swaps_couples(mut row: Vec<i32>) -> i32 {
 pub fn min_swaps_couples_us(row: Vec<i32>) -> i32 {
     let len = row.len();
     let n = len / 2;
-    let mut us = UnionSet::new(n);
+    let mut uf = UnionFind::new(n);
     for i in (0..len).step_by(2) {
         us.union((row[i] / 2) as usize, (row[i + 1] / 2) as usize);
     }

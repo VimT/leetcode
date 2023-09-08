@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 use leetcode::svec;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn are_sentences_similar_two(sentence1: Vec<String>, sentence2: Vec<String>, similar_pairs: Vec<Vec<String>>) -> bool {
     if sentence1.len() != sentence2.len() { return false; }
@@ -18,7 +18,7 @@ pub fn are_sentences_similar_two(sentence1: Vec<String>, sentence2: Vec<String>,
             cnt += 1;
         }
     }
-    let mut us = UnionSet::new(words.len());
+    let mut uf = UnionFind::new(words.len());
     for pair in similar_pairs {
         us.union(words[&pair[0]], words[&pair[1]]);
     }

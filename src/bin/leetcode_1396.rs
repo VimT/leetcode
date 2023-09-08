@@ -32,7 +32,7 @@ impl UndergroundSystem {
 }
 
 fn main() {
-    let mut us = UndergroundSystem::new();
+    let mut uf = UndergroundSystem::new();
     us.check_in(45, String::from("Leyton"), 3);
     us.check_in(32, String::from("Paradise"), 8);
     us.check_in(27, String::from("Leyton"), 10);

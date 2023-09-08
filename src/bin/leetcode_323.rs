@@ -1,10 +1,10 @@
 //! 无向图中连通分量的数目
 
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn count_components(n: i32, edges: Vec<Vec<i32>>) -> i32 {
-    let mut us = UnionSet::new(n as usize);
+    let mut uf = UnionFind::new(n as usize);
     for edge in edges {
         us.union(edge[0] as usize, edge[1] as usize);
     }

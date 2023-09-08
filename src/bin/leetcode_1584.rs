@@ -1,6 +1,6 @@
 //! 连接所有点的最小费用
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 fn dis(a: &Vec<i32>, b: &Vec<i32>) -> i32 {
     (a[0] - b[0]).abs() + (a[1] - b[1]).abs()
@@ -19,7 +19,7 @@ pub fn min_cost_connect_points(points: Vec<Vec<i32>>) -> i32 {
     }
 
     distance.sort_unstable();
-    let mut us = UnionSet::new(len);
+    let mut uf = UnionFind::new(len);
     let mut result = 0;
     for (d, x, y) in distance {
         if us.union(x, y) {

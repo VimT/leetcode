@@ -2,7 +2,7 @@
 
 
 use std::collections::BinaryHeap;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 
 /// 并查集，值从大到小依次添加，如果头和尾能连起来，则是结果
@@ -20,7 +20,7 @@ pub fn maximum_minimum_path(grid: Vec<Vec<i32>>) -> i32 {
             }
         }
     }
-    let mut us = UnionSet::new(m * n);
+    let mut uf = UnionFind::new(m * n);
     loop {
         let (val, x, y) = heap.pop().unwrap();
         us.union(x, y);

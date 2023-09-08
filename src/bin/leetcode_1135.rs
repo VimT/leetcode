@@ -2,12 +2,12 @@
 
 
 use std::collections::BinaryHeap;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 
 /// 最小生成树，Kruskal算法
 pub fn minimum_cost(n: i32, mut connections: Vec<Vec<i32>>) -> i32 {
-    let mut us = UnionSet::new(n as usize);
+    let mut uf = UnionFind::new(n as usize);
     connections.sort_unstable_by_key(|x| x[2]);
     let mut result = 0;
     for conn in connections {

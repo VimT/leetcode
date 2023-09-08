@@ -1,10 +1,10 @@
 //! 尽量减少恶意软件的传播
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn min_malware_spread(graph: Vec<Vec<i32>>, initial: Vec<i32>) -> i32 {
     let len = graph.len();
-    let mut us = UnionSet::new(len);
+    let mut uf = UnionFind::new(len);
     for i in 0..len {
         for j in i + 1..len {
             if graph[i][j] == 1 {

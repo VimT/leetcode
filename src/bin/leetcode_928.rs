@@ -2,12 +2,12 @@
 
 
 use std::collections::HashSet;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 
 pub fn min_malware_spread(graph: Vec<Vec<i32>>, initial: Vec<i32>) -> i32 {
     let len = graph.len();
-    let mut us = UnionSet::new(len);
+    let mut uf = UnionFind::new(len);
     let mut init_map = vec![false; len];
     for &idx in &initial {
         init_map[idx as usize] = true;

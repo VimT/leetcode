@@ -258,6 +258,18 @@ pub fn quick_pow(mut base: i64, mut pow: i64, mod0: i64) -> i64 {
     ans
 }
 
+/// 求逆元
+pub fn mod_inv(x: i64, m: i64) -> i64 {
+    let (mut a, mut b, mut u, mut v) = (x, m, 1, 0);
+    while b != 0 {
+        let q = a / b;
+        a -= b * q;
+        u -= v * q;
+        std::mem::swap(&mut a, &mut b);
+        std::mem::swap(&mut u, &mut v);
+    }
+    ((u % m) + m) % m
+}
 
 /// 欧拉筛
 pub fn cal_prime(n: usize) -> Vec<usize> {
@@ -269,6 +281,36 @@ pub fn cal_prime(n: usize) -> Vec<usize> {
             if i * p >= n { break; }
             is_prime[i * p] = false;
             if i % p == 0 { break; }
+        }
+    }
+    result
+}
+
+/// 计算每个数的最小质因子
+pub fn cal_lpf(n: usize) -> Vec<i32> {
+    let mut lpf = vec![0; n + 1];
+    for i in 2..=n {
+        if lpf[i] == 0 {
+            let mut j = i;
+            while j <= n {
+                if lpf[j] == 0 { lpf[j] = i as i32 };
+                j += i;
+            }
+        }
+    }
+    lpf
+}
+
+/// 计算每个数有多少个不同的质因子
+pub fn cal_prime_cnt(n: usize) -> Vec<i32> {
+    let mut result = vec![0; n];
+    for i in 2..n {
+        if result[i] == 0 {
+            let mut j = i;
+            while j < n {
+                result[j] += 1;
+                j += i;
+            }
         }
     }
     result

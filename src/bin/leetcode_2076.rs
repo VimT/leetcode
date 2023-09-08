@@ -1,10 +1,10 @@
 //! 处理含限制条件的好友请求
 
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn friend_requests(n: i32, restrictions: Vec<Vec<i32>>, requests: Vec<Vec<i32>>) -> Vec<bool> {
-    let mut us = UnionSet::new(n as usize);
+    let mut uf = UnionFind::new(n as usize);
     requests.into_iter().map(|x| {
         let req = (us.find(x[0] as usize), us.find(x[1] as usize));
         if req.0 == req.1 { return true; }

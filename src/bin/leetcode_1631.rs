@@ -3,7 +3,7 @@
 
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, VecDeque};
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 static DIR: [(isize, isize); 4] = [(-1, 0), (1, 0), (0, 1), (0, -1)];
 
@@ -59,7 +59,7 @@ pub fn minimum_effort_path_union_find(heights: Vec<Vec<i32>>) -> i32 {
             }
         }
     }
-    let mut us = UnionSet::new(m * n);
+    let mut uf = UnionFind::new(m * n);
     edges.sort_unstable_by(|x, y| x.2.cmp(&y.2));
     for edge in edges {
         us.union(edge.0, edge.1);

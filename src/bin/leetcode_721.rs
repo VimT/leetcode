@@ -3,14 +3,14 @@
 use std::collections::HashMap;
 
 use leetcode::{svec, unorder};
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn accounts_merge(accounts: Vec<Vec<String>>) -> Vec<Vec<String>> {
     // id - emails map
     let mut emails: Vec<Vec<String>> = vec![vec![]; accounts.len()];
     // email - id map
     let mut ei: HashMap<&String, usize> = HashMap::new();
-    let mut us = UnionSet::new(accounts.len());
+    let mut uf = UnionFind::new(accounts.len());
     for (i, account) in accounts.iter().enumerate() {
         for email in &account[1..] {
             match ei.get(email) {

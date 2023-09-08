@@ -1,6 +1,6 @@
 //! 打砖块
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 /// 反向 思考：补上被击碎的砖块以后，有多少个砖块因为这个补上的这个砖块而与屋顶的砖块相连。
 pub fn hit_bricks(grid: Vec<Vec<i32>>, hits: Vec<Vec<i32>>) -> Vec<i32> {
@@ -16,7 +16,7 @@ pub fn hit_bricks(grid: Vec<Vec<i32>>, hits: Vec<Vec<i32>>) -> Vec<i32> {
         copy[hit[0] as usize][hit[1] as usize] = 0;
     }
     let size = m * n;
-    let mut us = UnionSet::new(size + 1);
+    let mut uf = UnionFind::new(size + 1);
     for j in 0..n {
         if copy[0][j] == 1 {
             us.union(j, size);

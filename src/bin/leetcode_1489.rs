@@ -1,6 +1,6 @@
 //! 找到最小生成树里的关键边和伪关键边
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn find_critical_and_pseudo_critical_edges(n: i32, mut edges: Vec<Vec<i32>>) -> Vec<Vec<i32>> {
     for (i, edge) in edges.iter_mut().enumerate() {
@@ -8,10 +8,10 @@ pub fn find_critical_and_pseudo_critical_edges(n: i32, mut edges: Vec<Vec<i32>>)
     }
     edges.sort_unstable_by_key(|x| x[2]);
     let n = n as usize;
-    let mut us = UnionSet::new(n);
+    let mut uf = UnionFind::new(n);
     let mut value = 0;
 
-    fn unite(us: &mut UnionSet, edge: &Vec<i32>) -> bool {
+    fn unite(us: &mut UnionFind, edge: &Vec<i32>) -> bool {
         if us.find(edge[0] as usize) != us.find(edge[1] as usize) {
             us.union(edge[0] as usize, edge[1] as usize);
             return true;
@@ -30,7 +30,7 @@ pub fn find_critical_and_pseudo_critical_edges(n: i32, mut edges: Vec<Vec<i32>>)
     // 枚举每个边
     for i in 0..len {
         // 判断是否是关键边
-        let mut us = UnionSet::new(n);
+        let mut uf = UnionFind::new(n);
         let mut v = 0;
         for (j, edge) in edges.iter().enumerate() {
             if i != j && unite(&mut us, edge) {
@@ -43,7 +43,7 @@ pub fn find_critical_and_pseudo_critical_edges(n: i32, mut edges: Vec<Vec<i32>>)
         }
 
         // 判断是否是伪关键边
-        us = UnionSet::new(n);
+        us = UnionFind::new(n);
         unite(&mut us, &edges[i]);
         v = edges[i][2];
         for (j, edge) in edges.iter().enumerate() {

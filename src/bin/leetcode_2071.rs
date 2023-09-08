@@ -1,7 +1,7 @@
 //! 你可以安排的最多任务数目
 
 use std::collections::BTreeMap;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 // 520ms, n(logn)2
 pub fn max_task_assign(mut tasks: Vec<i32>, mut workers: Vec<i32>, pills: i32, strength: i32) -> i32 {
@@ -62,7 +62,7 @@ pub fn max_task_assign_union_set(mut tasks: Vec<i32>, mut workers: Vec<i32>, pil
     fn ok(workers: &Vec<i32>, tasks: &Vec<i32>, to: &Vec<usize>, mut p: i32, mid: usize) -> bool {
         // tasks[0..mid-1], workers[-c..]
         // 并查集： 作用1：标记某个tasks是否已用过，作用2：find(i) 找<=i的最大任务
-        let mut us = UnionSet::new(mid + 1);
+        let mut uf = UnionFind::new(mid + 1);
         let mut i = 0;
         for j in workers.len() - mid..workers.len() {
             while us.find(i + 1) != i + 1 { i += 1; }

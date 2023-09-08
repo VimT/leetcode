@@ -2,7 +2,7 @@
 
 
 use std::collections::VecDeque;
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn min_score(n: i32, roads: Vec<Vec<i32>>) -> i32 {
     let n = n as usize;
@@ -56,9 +56,9 @@ pub fn min_score_bfs(n: i32, roads: Vec<Vec<i32>>) -> i32 {
 
 
 
-pub fn min_score_union_set(n: i32, roads: Vec<Vec<i32>>) -> i32 {
+pub fn min_score_union_find(n: i32, roads: Vec<Vec<i32>>) -> i32 {
     let n = n as usize;
-    let mut us = UnionSet::new(n);
+    let mut uf = UnionFind::new(n);
     for road in &roads {
         us.union(road[0] as usize - 1, road[1] as usize - 1);
     }
@@ -83,5 +83,5 @@ fn main() {
     }
     test(min_score);
     test(min_score_bfs);
-    test(min_score_union_set);
+    test(min_score_union_find);
 }

@@ -1,12 +1,12 @@
 //! 保证图可完全遍历
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 pub fn max_num_edges_to_remove(n: i32, mut edges: Vec<Vec<i32>>) -> i32 {
     edges.sort_unstable_by_key(|x| -x[0]);
 
-    let mut us1 = UnionSet::new(n as usize);
-    let mut us2 = UnionSet::new(n as usize);
+    let mut us1 = UnionFind::new(n as usize);
+    let mut us2 = UnionFind::new(n as usize);
     let mut result = 0;
     for edge in edges {
         let (t, a, b) = (edge[0], edge[1] as usize - 1, edge[2] as usize - 1);

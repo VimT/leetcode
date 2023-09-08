@@ -2,7 +2,7 @@
 
 
 use std::collections::{BinaryHeap, VecDeque};
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 /// 从左上角bfs，找出到每个点的所有路径中 路径上最大的点 最小的值。
 /// 最后query即找 <query的点有多少个。
@@ -64,7 +64,7 @@ pub fn max_points2(grid: Vec<Vec<i32>>, queries: Vec<i32>) -> Vec<i32> {
         }
     }
     edges.sort_unstable_by_key(|x| x.0);
-    let mut us = UnionSet::new(m * n);
+    let mut uf = UnionFind::new(m * n);
 
     let mut result = vec![0; queries.len()];
     let mut j = 0;

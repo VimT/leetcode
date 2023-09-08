@@ -1,10 +1,10 @@
 //! 水资源分配优化
 
-use leetcode::union_set::UnionSet;
+use leetcode::union_find::UnionFind;
 
 /// 最小生成树
 pub fn min_cost_to_supply_water(n: i32, mut wells: Vec<i32>, mut pipes: Vec<Vec<i32>>) -> i32 {
-    let mut us = UnionSet::new(n as usize);
+    let mut uf = UnionFind::new(n as usize);
     pipes.sort_unstable_by_key(|x| x[2]);
     let mut result = wells.iter().sum();
     for pipe in pipes {

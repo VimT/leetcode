@@ -6,7 +6,7 @@ pub mod linknode;
 pub mod treenode;
 pub mod suffix_array;
 pub mod nested_integer;
-pub mod union_set;
+pub mod union_find;
 pub mod graph;
 // pub mod segment_tree;
 

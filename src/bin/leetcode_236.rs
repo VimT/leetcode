@@ -6,7 +6,7 @@ use std::rc::Rc;
 
 use leetcode::tree;
 use leetcode::treenode::TreeNode;
-use leetcode::union_set::UnionSetHashMap;
+use leetcode::union_find::UnionFindHashMap;
 
 pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
     fn dfs(root: Option<Rc<RefCell<TreeNode>>>, a: i32, b: i32) -> Option<Rc<RefCell<TreeNode>>> {
@@ -36,7 +36,7 @@ pub fn lowest_common_ancestor(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<
 }
 
 pub fn lowest_common_ancestor_tarjan(root: Option<Rc<RefCell<TreeNode>>>, p: Option<Rc<RefCell<TreeNode>>>, q: Option<Rc<RefCell<TreeNode>>>) -> Option<Rc<RefCell<TreeNode>>> {
-    fn dfs(root: Option<Rc<RefCell<TreeNode>>>, us: &mut UnionSetHashMap<i32>, vis: &mut HashSet<i32>, query: &HashMap<i32, Vec<i32>>, result: &mut HashMap<i32, Vec<Option<i32>>>) {
+    fn dfs(root: Option<Rc<RefCell<TreeNode>>>, us: &mut UnionFindHashMap<i32>, vis: &mut HashSet<i32>, query: &HashMap<i32, Vec<i32>>, result: &mut HashMap<i32, Vec<Option<i32>>>) {
         if root.is_none() { return; }
         let node = root.as_ref().unwrap().borrow();
         vis.insert(node.val);
@@ -57,7 +57,7 @@ pub fn lowest_common_ancestor_tarjan(root: Option<Rc<RefCell<TreeNode>>>, p: Opt
             }).collect());
         }
     }
-    let mut us = UnionSetHashMap::new();
+    let mut uf = UnionFindHashMap::new();
     let mut query = HashMap::new();
     let a = p.as_ref().unwrap().borrow().val;
     let b = q.as_ref().unwrap().borrow().val;

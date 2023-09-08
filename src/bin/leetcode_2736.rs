@@ -2,7 +2,7 @@
 
 use std::cmp::Ordering;
 
-/// 线段树，从小到达遍历
+/// 线段树，从小到大遍历
 pub fn maximum_sum_queries(nums1: Vec<i32>, nums2: Vec<i32>, queries: Vec<Vec<i32>>) -> Vec<i32> {
     let len = nums1.len();
     let mut n2: Vec<(i32, i32, usize)> = (0..len).map(|x| (nums2[x], nums1[x] + nums2[x], x)).collect();
