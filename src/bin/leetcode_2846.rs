@@ -114,7 +114,7 @@ pub fn min_operations_queries2(n: i32, edges: Vec<Vec<i32>>, queries: Vec<Vec<i3
             }
         }
     }
-    let mx = 64 - n.leading_zeros() as usize; // 2^14 > 10^4
+    let mx = 64 - n.leading_zeros() as usize;
     let mut parent = vec![vec![n; n]; mx];
     let mut info = vec![[0; 26]; n];
     let mut depth = vec![0; n];
@@ -154,45 +154,35 @@ pub fn min_operations_queries2(n: i32, edges: Vec<Vec<i32>>, queries: Vec<Vec<i3
 
 
 /// tarjan 求LCA，离线算法
-/// 或者 tarjan就求 LCA，然后用 root_cnt[u] + root_cnt[v] - 2 * root_cnt[lca] 也可以
 pub fn min_operations_queries3(n: i32, edges: Vec<Vec<i32>>, queries: Vec<Vec<i32>>) -> Vec<i32> {
     struct Tarjan<'a> {
         g: &'a Vec<Vec<(usize, i32)>>,
         query: &'a Vec<Vec<(usize, usize)>>,
         vis: Vec<bool>,
         fa: Vec<usize>,
-        fa_cnt: Vec<[i32; 26]>,
-        root_cnt: Vec<[i32; 26]>,
-        // 从根节点到当前节点的Info
-        result: Vec<i32>,
+        cnt: Vec<[i32; 26]>,
+        lca: Vec<usize>,
     }
 
     impl<'a> Tarjan<'a> {
         fn get(&mut self, x: usize) -> usize {
-            if self.fa[x] != x {
-                let p = self.fa[x];
-                self.fa[x] = self.get(p);
-                for i in 0..26 { self.fa_cnt[x][i] += self.fa_cnt[p][i] }
-            }
+            if self.fa[x] != x { self.fa[x] = self.get(self.fa[x]); }
             self.fa[x]
         }
         fn tarjan(&mut self, u: usize) {
             self.vis[u] = true;
             for &(v, w) in &self.g[u] {
                 if !self.vis[v] {
-                    self.root_cnt[v] = self.root_cnt[u].clone();
-                    self.root_cnt[v][w as usize] += 1;
+                    self.cnt[v] = self.cnt[u].clone();
+                    self.cnt[v][w as usize] += 1;
                     self.tarjan(v);
                     self.fa[v] = u;
-                    self.fa_cnt[v][w as usize] = 1;
                 }
             }
 
             for &(v, i) in &self.query[u] {
                 if self.vis[v] { // 另一个点已经访问过了，可以得出答案
-                    let lca = self.get(v);
-                    let (sum, max) = self.root_cnt[u].iter().zip(&self.fa_cnt[v]).zip(&self.root_cnt[lca]).map(|((a, b), c)| *a + *b - *c).fold((0, 0), |(sum, max), num| (sum + num, max.max(num)));
-                    self.result[i] = sum - max;
+                    self.lca[i] = self.get(v);
                 }
             }
         }
@@ -205,15 +195,19 @@ pub fn min_operations_queries3(n: i32, edges: Vec<Vec<i32>>, queries: Vec<Vec<i3
         g[v].push((u, w));
     }
     let mut q = vec![vec![]; n];
-    let qlen = queries.len();
-    for (i, query) in queries.into_iter().enumerate() {
+    for (i, query) in queries.iter().enumerate() {
         let (u, v) = (query[0] as usize, query[1] as usize);
         q[u].push((v, i));
         q[v].push((u, i));
     }
-    let mut t = Tarjan { g: &g, query: &q, vis: vec![false; n], fa: (0..n).collect(), fa_cnt: vec![[0; 26]; n], root_cnt: vec![[0; 26]; n], result: vec![0; qlen] };
+    let mut t = Tarjan { g: &g, query: &q, vis: vec![false; n], fa: (0..n).collect(), cnt: vec![[0; 26]; n], lca: vec![0; queries.len()] };
     t.tarjan(0);
-    t.result
+    let Tarjan { cnt, lca, .. } = t;
+    queries.into_iter().enumerate().map(|(i, query)| {
+        let (u, v) = (query[0] as usize, query[1] as usize);
+        let (sum, max) = cnt[u].iter().zip(&cnt[v]).zip(&cnt[lca[i]]).map(|((a, b), c)| *a + *b - *c * 2).fold((0, 0), |(sum, max), num| (sum + num, max.max(num)));
+        sum - max
+    }).collect()
 }
 
 fn main() {

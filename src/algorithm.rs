@@ -203,23 +203,27 @@ impl From<Vec<i32>> for BinIndexedTree {
     }
 }
 
+/// 部分匹配表：next[i] 表示 s[..i] 最长公共前后缀
+pub fn max_match_length(s: &[u8]) -> Vec<usize> {
+    let n = s.len();
+    let mut next = vec![0; n];
+    let mut j = 0;
+    for (i, &ch) in s.iter().enumerate().skip(1) {
+        while j > 0 && s[j] != ch { j = next[j - 1]; }
+        if ch == s[j] { j += 1; }
+        next[i] = j;
+    }
+    next
+}
+
 pub fn kmp(s: String, pattern: String) -> i32 {
     let query = s.as_bytes();
     let pattern = pattern.as_bytes();
     let n = query.len();
     let m = pattern.len();
     if m == 0 { return 0; }
-    let mut next = vec![0; m];
+    let next = max_match_length(pattern);
     let mut j = 0;
-    for i in 1..m {
-        // why while: aabaaa, last a need while
-        while j > 0 && pattern[i] != pattern[j] {
-            j = next[j - 1];
-        }
-        if pattern[i] == pattern[j] { j += 1; }
-        next[i] = j;
-    }
-    j = 0;
     for i in 0..n {
         while j > 0 && query[i] != pattern[j] {
             j = next[j - 1];
@@ -258,6 +262,34 @@ pub fn quick_pow(mut base: i64, mut pow: i64, mod0: i64) -> i64 {
     ans
 }
 
+pub fn matrix_mul(a: &Vec<Vec<i64>>, b: &Vec<Vec<i64>>, mod_: i64) -> Vec<Vec<i64>> {
+    let n = a.len();
+    let m = b[0].len();
+    let mut res = vec![vec![0; m]; n];
+    for (i, row) in a.iter().enumerate() {
+        for j in 0..m {
+            for (k, v) in row.iter().enumerate() {
+                res[i][j] = (res[i][j] + v * b[k][j]) % mod_;
+            }
+        }
+    }
+    res
+}
+
+pub fn matrix_power(mut base: Vec<Vec<i64>>, mut n: i64, mod_: i64) -> Vec<Vec<i64>> {
+    let size = base.len();
+    let mut res = vec![vec![0; size]; size];
+    for i in 0..size { res[i][i] = 1; }
+    while n > 0 {
+        if n & 1 == 1 {
+            res = matrix_mul(&res, &base, mod_);
+        }
+        base = matrix_mul(&base, &base, mod_);
+        n >>= 1;
+    }
+    res
+}
+
 /// 求逆元
 pub fn mod_inv(x: i64, m: i64) -> i64 {
     let (mut a, mut b, mut u, mut v) = (x, m, 1, 0);
@@ -269,6 +301,21 @@ pub fn mod_inv(x: i64, m: i64) -> i64 {
         std::mem::swap(&mut u, &mut v);
     }
     ((u % m) + m) % m
+}
+
+pub fn cal_is_prime(n: usize) -> Vec<bool> {
+    let mut result = vec![true; n + 1];
+    result[1] = false;
+    for i in 2..=n {
+        if result[i] {
+            let mut j = i * i;
+            while j <= n {
+                result[j] = false;
+                j += i;
+            }
+        }
+    }
+    result
 }
 
 /// 欧拉筛
@@ -316,6 +363,35 @@ pub fn cal_prime_cnt(n: usize) -> Vec<i32> {
     result
 }
 
+/// 逆元求组合数
+pub fn combination_num(len: usize, mod_: i64) -> fn(i64, i64) -> i64 {
+    unsafe {
+        static mut FAC: Vec<i64> = vec![];
+        static mut FACINV: Vec<i64> = vec![];
+        static mut MOD: i64 = 0;
+        FAC = vec![1; len];
+        FACINV = vec![1; len];
+        MOD = mod_;
+        unsafe fn grow(before: usize, new: usize) {
+            FAC.resize(new + 1, 0);
+            for i in before..=new {
+                FAC[i] = FAC[i - 1] * i as i64 % MOD;
+            }
+            FACINV.resize(new + 1, 0);
+            FACINV[new] = quick_pow(FAC[new], MOD - 2, MOD);
+            for i in (before + 1..=new).rev() {
+                FACINV[i - 1] = FACINV[i] * i as i64 % MOD;
+            }
+        }
+        grow(1, len - 1);
+        |n: i64, m: i64| -> i64 {
+            if m < 0 || n < m { return 0; }
+            if n as usize >= FAC.len() { grow(FAC.len(), n as usize); }
+            FAC[n as usize] * FACINV[m as usize] % MOD * FACINV[(n - m) as usize] % MOD
+        }
+    }
+}
+
 #[test]
 fn test_quick_sort() {
     let mut elements = vec![2, 1, 5, 4, 7, 9, 5, 2, 1, 0];
@@ -354,5 +430,5 @@ fn test_partial_sort() {
 fn test_bin_indexed_tree() {
     let elements = vec![4, 5, 6, 7];
     let tree = BinIndexedTree::from(elements);
-    println!("{}", tree.sum(3));
+    println!("{}", tree.sum());
 }
