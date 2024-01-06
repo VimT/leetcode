@@ -1,6 +1,5 @@
 pub mod algorithm;
 pub mod avl;
-pub mod fnv;
 pub mod gcd;
 pub mod linknode;
 pub mod treenode;
@@ -8,7 +7,8 @@ pub mod suffix_array;
 pub mod nested_integer;
 pub mod union_find;
 pub mod graph;
-// pub mod segment_tree;
+pub mod segment_tree;
+pub mod bit_index_tree;
 
 pub fn unorder<T: Ord>(mut list: Vec<T>) -> Vec<T> {
     list.sort_unstable();

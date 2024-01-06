@@ -1,5 +1,7 @@
 //! 达到末尾下标所需的最大跳跃次数
 
+use leetcode::segment_tree::{DynamicSegmentTree, SegmentSpec};
+
 pub fn maximum_jumps(nums: Vec<i32>, target: i32) -> i32 {
     fn dfs(nums: &Vec<i32>, i: usize, target: i64, mem: &mut Vec<i32>) -> i32 {
         if i == nums.len() - 1 { return 0; }
@@ -35,77 +37,29 @@ pub fn maximum_jumps2(nums: Vec<i32>, target: i32) -> i32 {
 /// 可以优化成 O(nlogU) 时间复杂度 （实际运行时间不如上面的）
 /// -target <= nums[j] - nums[i] <= target  ==> nums[i] - target <= nums[j] <= nums[i] + target
 pub fn maximum_jumps3(nums: Vec<i32>, target: i32) -> i32 {
-    struct Node {
-        val: i32,
-        l: usize,
-        r: usize,
-    }
-    impl Node {
-        fn new() -> Self {
-            Self { val: i32::MIN, l: 0, r: 0 }
-        }
-    }
-    // 动态开点线段树
-    struct SegmentTree {
-        tree: Vec<Node>,
-    }
-    impl SegmentTree {
-        fn push_down(&mut self, p: usize) {
-            if self.tree[p].l == 0 {
-                self.tree.push(Node::new());
-                self.tree[p].l = self.tree.len() - 1;
-            }
-            if self.tree[p].r == 0 {
-                self.tree.push(Node::new());
-                self.tree[p].r = self.tree.len() - 1;
-            }
-        }
-        fn query(&mut self, l: i64, r: i64, s: i64, t: i64, p: usize) -> i32 {
-            if s >= l && t <= r {
-                return self.tree[p].val;
-            }
-            self.push_down(p);
-            let mid = (s + t) >> 1;  // !! 大坑：在s,t包含负数的的时候，必须使用右移而不是除法。-1 / 2 == 0, -1 >> 1 == -1
-            let mut result = i32::MIN;
-            if l <= mid { result = result.max(self.query(l, r, s, mid, self.tree[p].l)); }
-            if r > mid { result = result.max(self.query(l, r, mid + 1, t, self.tree[p].r)); }
-            result
-        }
-        fn update(&mut self, x: i64, s: i64, t: i64, p: usize, val: i32) {
-            if x == s && x == t {
-                self.tree[p].val = val;
-                return;
-            }
-            self.push_down(p);
-            let mid = (s + t) >> 1;
-            if x <= mid {
-                self.update(x, s, mid, self.tree[p].l, val);
-            } else {
-                self.update(x, mid + 1, t, self.tree[p].r, val);
-            }
-            self.tree[p].val = self.tree[self.tree[p].l].val.max(self.tree[self.tree[p].r].val);
-        }
-        fn new(n: usize) -> Self {
-            let mut tree: Vec<Node> = Vec::with_capacity(n);
-            tree.push(Node::new());
-            tree.push(Node::new());
-            Self { tree }
-        }
+    pub enum Max {}
+    impl SegmentSpec for Max {
+        type ValType = i32;
+        type LazyType = i32;
+        fn op(&a: &Self::ValType, &b: &Self::ValType) -> Self::ValType { a.max(b) }
+        fn identity() -> Self::ValType { i32::MIN }
+        fn compose(&f: &Self::LazyType, g: &Self::LazyType) -> Self::LazyType { f.max(*g) }
+        fn apply(&f: &Self::LazyType, a: &Self::ValType, _: i64) -> Self::ValType { f.max(*a) }
     }
     let len = nums.len();
-    let mut st = SegmentTree::new(len * 4);
     let mut mn = nums[0];
     let mut mx = nums[0];
     for &num in &nums[1..] {
         mn = mn.min(num);
         mx = mx.max(num);
     }
-    st.update(nums[0] as i64, mn as i64, mx as i64, 1, 0);
+    let mut st = DynamicSegmentTree::<Max>::new(len * 4, mn as i64, mx as i64);
+    st.update(nums[0] as i64, nums[0] as i64, &0);
     let target = target as i64;
     for i in 1..len {
         let num = nums[i] as i64;
-        let q = st.query(num - target, num + target, mn as i64, mx as i64, 1) + 1;
-        st.update(num, mn as i64, mx as i64, 1, q);
+        let q = st.query(num - target, num + target) + 1;
+        st.update(num, num, &q);
         if i == len - 1 {
             return q.max(-1);
         }
@@ -115,6 +69,7 @@ pub fn maximum_jumps3(nums: Vec<i32>, target: i32) -> i32 {
 
 fn main() {
     fn test(func: fn(nums: Vec<i32>, target: i32) -> i32) {
+        assert_eq!(func(vec![-492309551, -582749469, 203358841, 981487464, 318778376, 227890401, 89900316], 0), -1);
         assert_eq!(func(vec![1, 0], 0), -1);
         assert_eq!(func(vec![1, 3, 6, 4, 1, 2], 0), -1);
         assert_eq!(func(vec![1, 3, 6, 4, 1, 2], 2), 3);

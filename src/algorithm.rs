@@ -430,5 +430,5 @@ fn test_partial_sort() {
 fn test_bin_indexed_tree() {
     let elements = vec![4, 5, 6, 7];
     let tree = BinIndexedTree::from(elements);
-    println!("{}", tree.sum());
+    println!("{}", tree.sum(3));
 }
