@@ -159,7 +159,7 @@ impl<T: SegmentSpec> DynamicSegmentTree<T> {
     }
     fn _update(&mut self, l: i64, r: i64, s: i64, t: i64, p: usize, f: &T::LazyType) {
         if l <= s && t <= r {
-            self.nodes[p].apply(f, (t + 1 - s) as i64);
+            self.nodes[p].apply(f, t + 1 - s);
             return;
         }
         self.pushdown(s, t, p);

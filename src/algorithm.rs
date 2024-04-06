@@ -204,7 +204,7 @@ impl From<Vec<i32>> for BinIndexedTree {
 }
 
 /// 部分匹配表：next[i] 表示 s[..i] 最长公共前后缀
-pub fn max_match_length(s: &[u8]) -> Vec<usize> {
+pub fn max_match_length<T: PartialEq + Copy>(s: &[T]) -> Vec<usize> {
     let n = s.len();
     let mut next = vec![0; n];
     let mut j = 0;
@@ -234,6 +234,25 @@ pub fn kmp(s: String, pattern: String) -> i32 {
         }
     }
     -1
+}
+
+pub fn kmp_all(query: &[u8], pattern: &[u8]) -> Vec<usize> {
+    let m = pattern.len();
+    if m == 0 { return vec![]; }
+    let next = max_match_length(pattern);
+    let mut j = 0;
+    let mut result = vec![];
+    for (i, &v) in query.iter().enumerate() {
+        while j > 0 && v != pattern[j] {
+            j = next[j - 1];
+        }
+        if v == pattern[j] { j += 1; }
+        if j == m {
+            result.push(i + 1 - m);
+            j = next[j - 1];
+        }
+    }
+    result
 }
 
 pub fn asserting_cmp<T: PartialOrd>(a: &T, b: &T) -> std::cmp::Ordering {

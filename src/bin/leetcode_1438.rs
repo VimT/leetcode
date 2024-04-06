@@ -22,25 +22,6 @@ pub fn longest_subarray_btree(nums: Vec<i32>, limit: i32) -> i32 {
     ans as i32
 }
 
-pub fn longest_subarray_avl(nums: Vec<i32>, limit: i32) -> i32 {
-    use leetcode::avl::AvlTreeSet;
-    let mut ans = 0;
-    let mut left = 0;
-    let mut right = 0;
-    let len = nums.len();
-    let mut tree = AvlTreeSet::new();
-    while right < len {
-        tree.insert((nums[right], right));
-        while tree.last().unwrap().0 - tree.first().unwrap().0 > limit {
-            tree.remove(&(nums[left], left));
-            left += 1;
-        }
-        ans = ans.max(right + 1 - left);
-        right += 1;
-    }
-    ans as i32
-}
-
 /// best
 pub fn longest_subarray_monotone_queue(nums: Vec<i32>, limit: i32) -> i32 {
     let mut ans = 0;
@@ -235,7 +216,6 @@ fn main() {
         assert_eq!(func(vec![4, 2, 2, 2, 4, 4, 2, 2], 0), 3);
     }
     test(longest_subarray_btree);
-    test(longest_subarray_avl);
     test(longest_subarray_monotone_queue);
     test(longest_subarray_segment_tree);
     test(longest_subarray_binary_search);

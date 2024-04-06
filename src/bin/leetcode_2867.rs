@@ -1,16 +1,14 @@
 //! 统计树中的合法路径数目
 
 
+use std::sync::OnceLock;
 use leetcode::algorithm::cal_is_prime;
 use leetcode::union_find::UnionFind;
 
 /// 遍历质数节点，对每个质数节点的 非质数子树大小做乘法原理
 pub fn count_paths(n: i32, edges: Vec<Vec<i32>>) -> i64 {
-    let prime = unsafe {
-        static mut IS_PRIME: Vec<bool> = vec![];
-        if IS_PRIME.is_empty() { IS_PRIME = cal_is_prime(1e5 as usize); }
-        &IS_PRIME
-    };
+    static IS_PRIME: OnceLock<Vec<bool>> = OnceLock::new();
+    let prime = IS_PRIME.get_or_init(|| cal_is_prime(1e5 as usize));
     let n = n as usize;
     let mut uf = UnionFind::new(n + 1);
     let mut g = vec![vec![]; n + 1];
@@ -41,11 +39,8 @@ pub fn count_paths(n: i32, edges: Vec<Vec<i32>>) -> i64 {
 
 /// 思路一样，但dfs 不使用并查集。（实测没有并查集速度快）
 pub fn count_paths2(n: i32, edges: Vec<Vec<i32>>) -> i64 {
-    let prime = unsafe {
-        static mut IS_PRIME: Vec<bool> = vec![];
-        if IS_PRIME.is_empty() { IS_PRIME = cal_is_prime(1e5 as usize); }
-        &IS_PRIME
-    };
+    static IS_PRIME: OnceLock<Vec<bool>> = OnceLock::new();
+    let prime = IS_PRIME.get_or_init(|| cal_is_prime(1e5 as usize));
     let n = n as usize;
     let mut g = vec![vec![]; n + 1];
     for edge in edges {

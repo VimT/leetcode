@@ -1,8 +1,10 @@
+#!/usr/bin/env python3
 import glob
 import html
 import json
 import logging
 import os
+import re
 import time
 from ast import literal_eval
 
@@ -116,6 +118,8 @@ class ProblemDetail(object):
             main_use.append('use leetcode::unorder;')
         return '\n'.join(lines), '\n'.join(main_use)
 
+    html_tag_re = re.compile('<[^<]+?>')
+
     def input_and_output(self):
         content = self.content
         lines = content.replace('：', ':').split('\n')
@@ -125,10 +129,8 @@ class ProblemDetail(object):
         outputs = []
 
         def clean(line: str):
-            return line.replace('<strong>', '').replace('</strong>', '') \
-                .replace('<b>', '').replace('</b>', '') \
-                .replace('<pre>', '').replace('</pre>', '') \
-                .replace('，', ', ') \
+            line = self.html_tag_re.sub('', line)
+            return line.replace('，', ', ') \
                 .replace(' ', '') \
                 .replace('输入:', '').replace('输出:', '') \
                 .removeprefix('>').strip().strip('`')
