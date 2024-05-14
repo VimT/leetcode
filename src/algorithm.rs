@@ -337,6 +337,10 @@ pub fn cal_is_prime(n: usize) -> Vec<bool> {
     result
 }
 
+pub fn is_prime(n: i32) -> bool {
+    n >= 2 && (2..=(n as f64).sqrt() as i32).all(|i| n % i != 0)
+}
+
 /// 欧拉筛
 pub fn cal_prime(n: usize) -> Vec<usize> {
     let mut result = vec![];

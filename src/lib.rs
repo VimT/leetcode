@@ -10,6 +10,7 @@ pub mod segment_tree;
 pub mod bit_index_tree;
 pub mod treap;
 pub mod multi_set;
+pub mod bitset;
 
 pub fn unorder<T: Ord>(mut list: Vec<T>) -> Vec<T> {
     list.sort_unstable();

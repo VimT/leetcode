@@ -137,18 +137,23 @@ class ProblemDetail(object):
 
         while i < n:
             if '输入:' in lines[i]:
-                s = clean(lines[i])
-                j = i + 1
-                while not ('输出' in lines[j] or lines[j] == '' or lines[j] == '>'):
-                    line = clean(lines[j])
+                s = lines[i]
+                i += 1
+                while not ('输出' in lines[i] or lines[i] == '' or lines[i] == '>'):
+                    line = lines[i]
                     if ' = ' in line and s:
                         s += ', '
                     s += line
-                    j += 1
+                    i += 1
+                s = clean(s)
                 inputs.append(s)
-                i = j
             elif '输出:' in lines[i]:
-                outputs.append(clean(lines[i]))
+                s = lines[i]
+                i += 1
+                while not (lines[i] == '' or '解释' in lines[i]):
+                    s += lines[i]
+                    i += 1
+                outputs.append(clean(s))
                 i += 1
             else:
                 i += 1
