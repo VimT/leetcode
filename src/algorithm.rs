@@ -259,10 +259,12 @@ pub fn asserting_cmp<T: PartialOrd>(a: &T, b: &T) -> std::cmp::Ordering {
     a.partial_cmp(b).expect("Comparing incomparable elements")
 }
 
+// >= key 的第一个位置
 pub fn binary_search_lower<T: PartialOrd>(slice: &[T], key: &T) -> usize {
     slice.binary_search_by(|x| asserting_cmp(x, key).then(std::cmp::Ordering::Greater)).unwrap_err()
 }
 
+// > key 的第一个位置
 pub fn binary_search_upper<T: PartialOrd>(slice: &[T], key: &T) -> usize {
     slice.binary_search_by(|x| asserting_cmp(x, key).then(std::cmp::Ordering::Less)).unwrap_err()
 }
@@ -389,27 +391,24 @@ pub fn cal_prime_cnt(n: usize) -> Vec<i32> {
 /// 逆元求组合数
 pub fn combination_num(len: usize, mod_: i64) -> fn(i64, i64) -> i64 {
     unsafe {
-        static mut FAC: Vec<i64> = vec![];
-        static mut FACINV: Vec<i64> = vec![];
+        static mut FAC: Vec<i64> = Vec::new();
+        static mut FACINV: Vec<i64> = Vec::new();
         static mut MOD: i64 = 0;
-        FAC = vec![1; len];
-        FACINV = vec![1; len];
-        MOD = mod_;
-        unsafe fn grow(before: usize, new: usize) {
-            FAC.resize(new + 1, 0);
-            for i in before..=new {
-                FAC[i] = FAC[i - 1] * i as i64 % MOD;
+        if FAC.is_empty() {
+            MOD = mod_;
+            FAC = vec![1; len];
+            FACINV = vec![1; len];
+            for i in 1..len {
+                FAC[i] = FAC[i - 1] * i as i64 % mod_;
             }
-            FACINV.resize(new + 1, 0);
-            FACINV[new] = quick_pow(FAC[new], MOD - 2, MOD);
-            for i in (before + 1..=new).rev() {
-                FACINV[i - 1] = FACINV[i] * i as i64 % MOD;
+            FACINV[len-1] = quick_pow(FAC[len-1], mod_ - 2, mod_);
+            for i in (2..len).rev() {
+                FACINV[i - 1] = FACINV[i] * i as i64 % mod_;
             }
         }
-        grow(1, len - 1);
         |n: i64, m: i64| -> i64 {
             if m < 0 || n < m { return 0; }
-            if n as usize >= FAC.len() { grow(FAC.len(), n as usize); }
+            assert!(n < FAC.len() as i64);
             FAC[n as usize] * FACINV[m as usize] % MOD * FACINV[(n - m) as usize] % MOD
         }
     }
