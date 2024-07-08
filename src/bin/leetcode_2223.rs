@@ -1,6 +1,6 @@
 //! 构造字符串的总得分和
 
-use leetcode::suffix_array::{cal_suffix_sa, get_height};
+use leetcode::suffix_array::SuffixArray;
 
 /// 扩展kmp，z函数
 pub fn sum_scores_z(s: String) -> i64 {
@@ -33,9 +33,9 @@ pub fn sum_scores_z(s: String) -> i64 {
 pub fn sum_scores_sa(s: String) -> i64 {
     let s = s.as_bytes();
     let len = s.len();
-    let (rank, sa) = cal_suffix_sa(s);
-    let height = get_height(s, &rank, &sa);
-    let start = rank[0];
+    let sa = SuffixArray::new(s);
+    let height = sa.get_height();
+    let start = sa.ranks[0];
     let mut min = 1e9 as usize;
     let mut result = len;
     for i in start + 1..len {

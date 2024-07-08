@@ -3,7 +3,8 @@
 use std::collections::HashSet;
 
 use rand::{Rng, thread_rng};
-use leetcode::suffix_array::{cal_suffix_sa, get_height};
+
+use leetcode::suffix_array::SuffixArray;
 
 #[inline]
 fn quick_pow(mut a: i64, mut b: i64, m: i64) -> i64 {
@@ -84,14 +85,14 @@ pub fn longest_dup_substring(s: String) -> String {
 pub fn longest_dup_substring_sa(s: String) -> String {
     let s = s.as_bytes();
     let len = s.len();
-    let (rank, sa) = cal_suffix_sa(s);
-    let height = get_height(s, &rank, &sa);
+    let sa = SuffixArray::new(s);
+    let height = sa.get_height();
     let mut p = 0;
     let mut ll = 0;
     for i in 0..len {
         if height[i] > ll {
             ll = height[i];
-            p = sa[i];
+            p = sa.suffix_array[i];
         }
     }
     unsafe { String::from_utf8_unchecked(s[p..p + ll].to_vec()) }

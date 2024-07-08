@@ -86,29 +86,99 @@ pub fn cal_suffix_sa(s: &[u8]) -> (Vec<usize>, Vec<usize>) {
     (ranks, sa)
 }
 
-//计算height数组
-//height[i]=suffix(sa[i-1])和 suffix(sa[i])的最长公共前缀，也就是排名相邻的两个后缀的最长公共前缀。
-//这里借助h[i]=height[rank[i]]，也就是 suffix(i)和在它前一名的后缀的最长公共前缀
-//用递推的方式计算。
-pub fn get_height(s: &[u8], ranks: &Vec<usize>, suffix_array: &Vec<usize>) -> Vec<usize> {
-    let len = s.len();
-    let mut ll = 0;
-    let mut height = vec![0; len];
-    for i in 0..len {
-        if ll > 0 {
-            ll -= 1;
-        }
-        let rk = ranks[i];
-        if rk >= 1 {
-            let j = suffix_array[rk - 1];//排在ranks[i] - 1的后缀串j
-            while i + ll < len && j + ll < len && s[i + ll] == s[j + ll] {
-                //计算后缀i与后缀j的LCP
-                ll += 1;
-            }
-            height[rk] = ll;
-        } else {
-            height[rk] = ll;
-        }
+pub struct SuffixArray<'a> {
+    pub s: &'a [u8],
+    pub ranks: Vec<usize>,
+    pub suffix_array: Vec<usize>,
+}
+
+
+impl<'a> SuffixArray<'a> {
+    pub fn new(s: &'a [u8]) -> Self {
+        let (ranks, suffix_array) = cal_suffix_sa(s);
+        Self { s, ranks, suffix_array }
     }
-    height
+
+    pub fn get_height(&self) -> Vec<usize> {
+        //计算height数组
+        //height[i]=suffix(sa[i-1])和 suffix(sa[i])的最长公共前缀，也就是排名相邻的两个后缀的最长公共前缀。
+        //这里借助h[i]=height[rank[i]]，也就是 suffix(i)和在它前一名的后缀的最长公共前缀
+        //用递推的方式计算。
+        let len = self.s.len();
+        let mut ll = 0;
+        let mut height = vec![0; len];
+        for i in 0..len {
+            if ll > 0 {
+                ll -= 1;
+            }
+            let rk = self.ranks[i];
+            if rk >= 1 {
+                let j = self.suffix_array[rk - 1]; //排在ranks[i] - 1的后缀串j
+                while i + ll < len && j + ll < len && self.s[i + ll] == self.s[j + ll] {
+                    //计算后缀i与后缀j的LCP
+                    ll += 1;
+                }
+                height[rk] = ll;
+            } else {
+                height[rk] = ll;
+            }
+        }
+        height
+    }
+
+    /// 返回所有匹配的位置 ( unsorted )
+    /// O(log(n) * len(word) + len(result))
+    pub fn look_up(&self, word: &[u8]) -> Vec<usize> {
+        // 找第一个 s.starts_with(word) 的位置
+        let i = self.suffix_array.binary_search_by(|&x| {
+            self.s[x..].cmp(word).then(std::cmp::Ordering::Greater)
+        }).unwrap_err();
+        // 从 i 开始，找第一个 !s.starts_with(word) 的位置
+        let j = i + self.suffix_array[i..].binary_search_by(|&x| {
+            if self.s[x..].starts_with(word) { std::cmp::Ordering::Less } else { std::cmp::Ordering::Greater }
+        }).unwrap_err();
+        self.suffix_array[i..j].to_vec()
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_sa() {
+        let s = "banana".as_bytes();
+        let sa = SuffixArray::new(s);
+
+        // suffix_array 表示后缀数组按字典序排序后的顺序
+        // s[5..] a
+        // s[3..] ana
+        // s[1..] anana
+        // s[0..] banana
+        // s[4..] na
+        // s[2..] nana
+        assert_eq!(sa.suffix_array, vec![5, 3, 1, 0, 4, 2]);
+
+        // ranks 表示后缀数组的排名
+        // banana 排第 3 位
+        //  anana 排第 2 位
+        //   nana 排第 5 位
+        //    ana 排第 1 位
+        //     na 排第 4 位
+        //      a 排第 0 位
+        assert_eq!(sa.ranks, vec![3, 2, 5, 1, 4, 0]);
+
+        // height 表示排名相邻的两个后缀的最长公共前缀
+        let height = sa.get_height();
+        // 0: a, nana
+        // 1: ana, a
+        // 3: anana, ana
+        // 0: banana, anana
+        // 0: na, banana
+        // 2: nana, na
+        assert_eq!(height, vec![0, 1, 3, 0, 0, 2]);
+
+        let m = sa.look_up("ana".as_bytes());
+        assert_eq!(m, vec![3, 1]);
+    }
 }
