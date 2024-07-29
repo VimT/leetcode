@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import glob
 import html
 import json
 import logging
@@ -8,6 +7,7 @@ import re
 import time
 import warnings
 from ast import literal_eval
+from pathlib import Path
 
 import click
 import pyperclip
@@ -536,13 +536,7 @@ def get(pids, force):
 
 @cli.command()
 def fix_id():
-    for file in glob.glob("src/bin/leetcode_*.rs"):
-        pid = file.partition("_")[2].partition(".")[0]
-        if not pid.isdigit():
-            continue
-        pid = int(pid)
-        if pid < 5000:
-            continue
+    for file in Path("src/bin/").glob("leetcode_*contest*.rs"):
         with open(file, "r", encoding="utf-8") as f:
             first_line = f.readline()
             ch_title = first_line.strip("/! ").strip()
@@ -551,18 +545,20 @@ def fix_id():
         if problems:
             problem = problems[0]
             real_id = int(problem.id)
-            if real_id != pid:
-                to = file.replace(str(pid), str(real_id))
-                print(f"rename {file} -> {to}")
-                os.rename(file, to)
+            to = file.parent / f"leetcode_{real_id}.rs"
+            print(f"rename {file} -> {to}")
+            os.rename(file, to)
 
 
 @cli.command()
 @click.argument("name")
 def contest(name):
+    prefix = name.replace("-", "_")
     for question in contest_problems_graphql(name):
         detail = contest_problem_detail_graphql(name, question["titleSlug"])
-        path = os.path.join(BASE_DIR, "src", "bin", f"leetcode_{detail.id}.rs")
+        question_number = question["questionNumber"]
+        path = os.path.join(BASE_DIR, "src", "bin",
+                            f"leetcode_{prefix}_q{question_number}.rs")
         if os.path.exists(path):
             logger.error(f"path {path} exist")
             continue
